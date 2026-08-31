@@ -1,0 +1,34 @@
+/*
+ * NomaTune (2026)
+ * © Shahdullah — github.com/shahdullah
+ * GPL-3.0 License | Contributors: see git history
+ * Do not remove or alter this notice. - Per GPL-3.0 Section 4 & Section 5
+ *
+ * Based on ArchiveTune (2026)
+ * © Rukamori — github.com/rukamori
+ * GPL-3.0 License | Contributors: see git history
+ * Do not remove or alter this notice. - Per GPL-3.0 Section 4 & Section 5
+ */
+
+package com.shahdullah.nomatune.widget
+
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
+
+object MusicWidgetKeys {
+    val TRACK_TITLE = stringPreferencesKey("widget_track_title")
+    val TRACK_ARTIST = stringPreferencesKey("widget_track_artist")
+    val ART_PATH = stringPreferencesKey("widget_art_path")
+    val IS_PLAYING = booleanPreferencesKey("widget_is_playing")
+    val IS_AVAILABLE = booleanPreferencesKey("widget_is_available")
+    val DOMINANT_COLOR = intPreferencesKey("widget_dominant_color")
+    val PLAYBACK_POSITION = floatPreferencesKey("widget_position")
+    val TOTAL_PLAYS = androidx.datastore.preferences.core.stringPreferencesKey("widget_total_plays")
+    val LISTENING_TIME = androidx.datastore.preferences.core.stringPreferencesKey("widget_listening_time")
+    val RECENT_SONGS = androidx.datastore.preferences.core.stringPreferencesKey("widget_recent_songs")
+    val GENRES = androidx.datastore.preferences.core.stringPreferencesKey("widget_genres")
+    val RECOMMENDATIONS = androidx.datastore.preferences.core.stringPreferencesKey("widget_recommendations")
+    val TOP_SONG_SUMMARY = androidx.datastore.preferences.core.stringPreferencesKey("widget_top_song_summary")
+}
