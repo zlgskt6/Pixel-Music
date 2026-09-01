@@ -34,8 +34,8 @@ import java.security.MessageDigest
 object LastFM {
     const val DEFAULT_API_ENDPOINT = "https://ws.audioscrobbler.com/2.0/"
     const val LIBREFM_API_ENDPOINT = "https://libre.fm/2.0/"
-    const val FALLBACK_COMPAT_API_KEY = "nomatune"
-    const val FALLBACK_COMPAT_SECRET = "nomatune"
+    const val FALLBACK_COMPAT_API_KEY = "pixelmusic"
+    const val FALLBACK_COMPAT_SECRET = "pixelmusic"
 
     data class RuntimeConfig(
         val endpoint: String,

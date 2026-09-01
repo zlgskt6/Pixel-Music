@@ -59,7 +59,7 @@ object Updater {
     private const val ReleaseCacheCheckIntervalMs: Long = 6 * 60 * 60 * 1000L
     private const val StableDownloadUrl = "https://github.com/zlgskt6/Pixel-Music/releases/latest"
     private const val DailyNightlyDownloadUrl =
-        "https://github.com/NomaTuneApp/daily-nightly/releases/latest"
+        "https://github.com/PixelMusicApp/daily-nightly/releases/latest"
     fun isUpdateAvailable(latestVersion: String, currentVersion: String): Boolean {
         val latestParts = latestVersion.trimStart('v').split(".").mapNotNull { it.toIntOrNull() }
         val currentParts = currentVersion.split("-").firstOrNull()?.split(".")?.mapNotNull { it.toIntOrNull() } ?: emptyList()
@@ -492,7 +492,7 @@ object Updater {
         cachedEtag: String?,
     ): ReleasesNetworkResult {
         val response: HttpResponse =
-            client.get("https://api.github.com/repos/NomaTuneApp/daily-nightly/releases?per_page=$perPage") {
+            client.get("https://api.github.com/repos/PixelMusicApp/daily-nightly/releases?per_page=$perPage") {
                 headers {
                     append("Accept", "application/vnd.github+json")
                     append("User-Agent", "Pixel Music")
@@ -537,7 +537,7 @@ object Updater {
 
         val tag = latestDailyNightlyReleaseTag
         if (tag != null) {
-            return "https://github.com/NomaTuneApp/daily-nightly/releases/download/$tag/app-$distributionArtifactPrefix${BuildConfig.DEVICE}-${BuildConfig.ARCHITECTURE}-nightly.apk"
+            return "https://github.com/PixelMusicApp/daily-nightly/releases/download/$tag/app-$distributionArtifactPrefix${BuildConfig.DEVICE}-${BuildConfig.ARCHITECTURE}-nightly.apk"
         }
         return DailyNightlyDownloadUrl
     }

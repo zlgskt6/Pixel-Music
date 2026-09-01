@@ -73,7 +73,7 @@ fun StarDialog(
 
             Button(
                 onClick = {
-                    uriHandler.openUri("https://www.buymeachai.in/NomaTune")
+                    uriHandler.openUri("https://www.buymeachai.in/PixelMusic")
                     onSupport()
                 },
                 modifier = Modifier.fillMaxWidth(),

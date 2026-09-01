@@ -28,7 +28,7 @@ import com.shahdullah.nomatune.utils.getAsync
 
 object TogetherOnlineEndpoint {
     private const val EndpointSourceUrl =
-        "https://raw.githubusercontent.com/zlgskt6/Pixel-Music/refs/heads/dev/NomaTuneShahdullahServer.txt"
+        "https://raw.githubusercontent.com/zlgskt6/Pixel-Music/refs/heads/dev/PixelMusicShahdullahServer.txt"
 
     private const val CacheTtlMs: Long = 6 * 60 * 60 * 1000L
 

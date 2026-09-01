@@ -568,7 +568,7 @@ private fun PreviewContainer(
                         songTitle = payload.songTitle,
                         artistName = payload.artists,
                         coverArtUrl = mediaMetadata?.thumbnailUrl,
-                        glassStyle = selectedGlassStyle,
+                        lyricGlassStyle = selectedGlassStyle,
                         shareOptions = options,
                     )
                 }

@@ -1028,8 +1028,7 @@
     <string name="small">Small</string>
     <string name="viewCountText">%s views</string>
 
-    <string name="pixelmusic_canvas">Pixel Music Canvas</string>
-    <string name="pixelmusic_canvas_desc">Animate album artwork while playing (Powered by BetterLyrics)</string>
+
     <string name="build_your_mix_manual_required">Please enter an artist, genre, or mood to build your mix</string>
     <string name="build_your_mix_no_manual_match">No songs found matching your input</string>
     <string name="build_your_mix_failed">Failed to build mix</string>
@@ -1039,4 +1038,18 @@
     <string name="good_afternoon">Good afternoon</string>
     <string name="good_evening">Good evening</string>
     <string name="good_night">Good night</string>
+    <string name="changelog">Changelog</string>
+    <string name="view_changelog">View Changelog</string>
+    <string name="error_loading_changelog">Error loading changelog</string>
+    <string name="no_releases">No releases found</string>
+    <string name="check_for_update">Check for update</string>
+    <string name="updates_channel_warning_intro">Please review the differences between update channels before continuing.</string>
+    <string name="updates_channel_warning_stable_title">Stable Channel</string>
+    <string name="updates_channel_warning_stable_source">Source: GitHub Releases</string>
+    <string name="updates_channel_warning_stable_desc">Recommended for most users. Contains tested and reliable builds.</string>
+    <string name="updates_channel_warning_nightly_title">Nightly / Development Channel</string>
+    <string name="updates_nightly_hosting_description">Source: Automated builds from the latest commits.</string>
+    <string name="updates_channel_warning_nightly_risk">Risk: May contain bugs or incomplete features.</string>
+    <string name="updates_channel_warning_nightly_unstable">This channel is intended for users who want to test the absolute latest changes.</string>
+    <string name="updates_channel_warning_acknowledgement">By enabling notifications, you agree to receive updates from your selected channel.</string>
 </resources>
