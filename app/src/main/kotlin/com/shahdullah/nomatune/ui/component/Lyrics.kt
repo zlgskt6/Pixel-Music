@@ -1094,16 +1094,17 @@ fun Lyrics(
                                         val nextText = baseWords.getOrNull(idx + 1)?.text
                                         val includeSpace =
                                             if (isCjk) {
-                                                // Add space at CJK↔Latin boundaries
+                                                val neighbor = (if (lineIsRtl) prevText else nextText) as? String
                                                 val currEdge = if (lineIsRtl) word.text.firstOrNull() else word.text.lastOrNull()
-                                                val neighborEdge = if (lineIsRtl) prevText?.lastOrNull() else nextText?.firstOrNull()
-                                                val neighbor: String? = (if (lineIsRtl) prevText else nextText)
-                                                currEdge != null && neighborEdge != null && neighbor != null &&
+                                                val neighborEdge = if (lineIsRtl) neighbor?.lastOrNull() else neighbor?.firstOrNull()
+                                                
+                                                if (currEdge != null && neighborEdge != null && neighbor != null) {
                                                     (currEdge.code < 0x3000 || neighborEdge.code < 0x3000) &&
                                                     shouldAppendWordSpace(
-                                                        if (lineIsRtl) neighbor!! else word.text,
-                                                        if (lineIsRtl) word.text else neighbor!!
+                                                        if (lineIsRtl) neighbor else word.text,
+                                                        if (lineIsRtl) word.text else neighbor
                                                     )
+                                                } else false
                                             } else if (lineIsRtl) {
                                                 prevText != null && shouldAppendWordSpace(prevText, word.text)
                                             } else {
