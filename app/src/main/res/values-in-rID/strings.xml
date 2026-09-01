@@ -389,9 +389,9 @@
     <string name="custom_value">Nilai khusus</string>
     <string name="new_library_design">Desain pustaka baru</string>
     <string name="new_library_design_description">Aktifkan desain pustaka baru (mungkin tidak stabil)</string>
-    <string name="nomatune_canvas">Kanvas Pixel Music</string>
-    <string name="nomatune_canvas_desc">Menganimasikan sampul album saat diputar (Didukung oleh BetterLyrics)</string>
-    <string name="nomatune_canvas_v7_desc">Tidak tersedia dengan gaya pemutar Immersive</string>
+    <string name="pixelmusic_canvas">Kanvas Pixel Music</string>
+    <string name="pixelmusic_canvas_desc">Menganimasikan sampul album saat diputar (Didukung oleh BetterLyrics)</string>
+    <string name="pixelmusic_canvas_v7_desc">Tidak tersedia dengan gaya pemutar Immersive</string>
     <string name="show_button1_description">Alihkan visibilitas tombol 1 di Discord Rich Presence</string>
     <string name="show_button2_description">Alihkan visibilitas tombol 2 di Discord Rich Presence</string>
     <string name="discord_activity_type">Jenis aktivitas</string>

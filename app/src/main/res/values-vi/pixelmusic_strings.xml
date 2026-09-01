@@ -629,7 +629,7 @@
 
     <!-- About Screen -->
     <string name="about_lead_developer">Nhà phát triển chính</string>
-    <string name="about_nomatune_team">Nhóm Pixel Music</string>
+    <string name="about_pixelmusic_team">Nhóm Pixel Music</string>
     <string name="about_respecter">Tôn kính</string>
     <string name="about_contributors">Người đóng góp</string>
     <string name="about_position_lead_dev">Hả?</string>

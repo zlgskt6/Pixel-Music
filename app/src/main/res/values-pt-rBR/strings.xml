@@ -586,9 +586,9 @@
     <string name="no_matching_playlists">Nenhuma playlist correspondente</string>
     <string name="random_theme_on_startup">Tema aleatório na inicialização</string>
     <string name="random_theme_on_startup_desc">Aplicar uma paleta de cores aleatória sempre que o aplicativo for iniciado</string>
-    <string name="nomatune_canvas">Canvas do Pixel Music</string>
-    <string name="nomatune_canvas_desc">Exiba a arte do álbum animadamente durante a reprodução (com tecnologia BetterLyrics)</string>
-    <string name="nomatune_canvas_v7_desc">Não disponível com o estilo de player Imersivo</string>
+    <string name="pixelmusic_canvas">Canvas do Pixel Music</string>
+    <string name="pixelmusic_canvas_desc">Exiba a arte do álbum animadamente durante a reprodução (com tecnologia BetterLyrics)</string>
+    <string name="pixelmusic_canvas_v7_desc">Não disponível com o estilo de player Imersivo</string>
     <string name="disable_animations">Desabilitar animações</string>
     <string name="disable_animations_desc">Desative a maioria das animações do aplicativo. Recomendado para dispositivos de baixo desempenho</string>
     <string name="blur_intensity">intensidade do desfoque</string>

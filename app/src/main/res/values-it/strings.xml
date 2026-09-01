@@ -665,9 +665,9 @@
     <string name="support_development_message">Ciao! Sono Shahdullah, lo sviluppatore di Pixel Music. Se Pixel Music si è guadagnato un posto nella tua routine musicale quotidiana, puoi aiutare a portarlo avanti facendo una donazione o mettendo una stella al progetto su GitHub. Grazie per aver sostenuto il lavoro dietro l\'app.</string>
     <string name="random_theme_on_startup">Tema random all\'avvio</string>
     <string name="random_theme_on_startup_desc">Applica una palette di colori randomica ad ogni avvio dell\'app</string>
-    <string name="nomatune_canvas">Canvas Pixel Music</string>
-    <string name="nomatune_canvas_desc">Anima la copertina dell\'album durante la riproduzione (Fornito da BetterLyrics)</string>
-    <string name="nomatune_canvas_v7_desc">Non disponibile con lo stile player Immersivo</string>
+    <string name="pixelmusic_canvas">Canvas Pixel Music</string>
+    <string name="pixelmusic_canvas_desc">Anima la copertina dell\'album durante la riproduzione (Fornito da BetterLyrics)</string>
+    <string name="pixelmusic_canvas_v7_desc">Non disponibile con lo stile player Immersivo</string>
     <string name="disable_animations">Disabilita animazioni</string>
     <string name="disable_animations_desc">Disabilita la maggior parte delle animazioni dell\'app. Raccomandato per dispositivi di fascia bassa</string>
     <string name="blur_intensity">Intensità sfocatura</string>

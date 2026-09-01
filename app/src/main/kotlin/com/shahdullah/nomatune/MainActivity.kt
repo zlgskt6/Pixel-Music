@@ -210,7 +210,7 @@ import com.shahdullah.nomatune.constants.RemindAfterKey
 import com.shahdullah.nomatune.constants.SYSTEM_DEFAULT
 import com.shahdullah.nomatune.constants.SearchSource
 import com.shahdullah.nomatune.constants.SearchSourceKey
-import com.shahdullah.nomatune.constants.NomaTuneOnboardingCompletedKey
+import com.shahdullah.nomatune.constants.PixelMusicOnboardingCompletedKey
 import com.shahdullah.nomatune.constants.StopMusicOnTaskClearKey
 import com.shahdullah.nomatune.constants.UseSystemFontKey
 import com.shahdullah.nomatune.db.MusicDatabase
@@ -518,7 +518,7 @@ class MainActivity : ComponentActivity() {
             val updateChannel by rememberEnumPreference(UpdateChannelKey, defaultValue = UpdateChannel.STABLE)
 
             LaunchedEffect(Unit) {
-                val isOnboardingDone = PreferenceStore.get(NomaTuneOnboardingCompletedKey) ?: false
+                val isOnboardingDone = PreferenceStore.get(PixelMusicOnboardingCompletedKey) ?: false
                 if (isOnboardingDone && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
                     ContextCompat.checkSelfPermission(
                         this@MainActivity,
@@ -822,7 +822,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                     val onboardingCompleted = remember {
-                        PreferenceStore.get(NomaTuneOnboardingCompletedKey) ?: false
+                        PreferenceStore.get(PixelMusicOnboardingCompletedKey) ?: false
                     }
 
 

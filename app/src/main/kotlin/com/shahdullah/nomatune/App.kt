@@ -42,7 +42,7 @@ import com.shahdullah.nomatune.innertube.YouTube
 import com.shahdullah.nomatune.innertube.models.YouTubeLocale
 import com.shahdullah.nomatune.kugou.KuGou
 import com.shahdullah.nomatune.lastfm.LastFM
-import com.shahdullah.nomatune.canvas.NomaTuneCanvas
+import com.shahdullah.nomatune.canvas.PixelMusicCanvas
 import com.shahdullah.nomatune.paxsenix.PaxsenixLyrics
 import com.shahdullah.nomatune.storage.StorageFolderKind
 import com.shahdullah.nomatune.storage.StorageLocationRepository
@@ -114,7 +114,7 @@ class App : Application(), SingletonImageLoader.Factory {
 
     private fun initializeCriticalSync() {
         CanvasArtworkPlaybackCache.init(this)
-        NomaTuneCanvas.initialize(BuildConfig.CANVAS_BEARER_TOKEN)
+        PixelMusicCanvas.initialize(BuildConfig.CANVAS_BEARER_TOKEN)
         PaxsenixLyrics.setUserAgent("Pixel Music", BuildConfig.VERSION_NAME)
 
         val locale = Locale.getDefault()

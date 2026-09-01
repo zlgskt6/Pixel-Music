@@ -333,8 +333,8 @@
     <string name="custom_value">Valor personalizado</string>
     <string name="new_library_design">Nuevo diseño de biblioteca</string>
     <string name="new_library_design_description">Habilita el nuevo diseño de la biblioteca (puede ser inestable)</string>
-    <string name="nomatune_canvas">Pixel Music Canvas</string>
-    <string name="nomatune_canvas_desc">Animar la portada del álbum mientras se reproduce (Impulsado por BetterLyrics)</string>
+    <string name="pixelmusic_canvas">Pixel Music Canvas</string>
+    <string name="pixelmusic_canvas_desc">Animar la portada del álbum mientras se reproduce (Impulsado por BetterLyrics)</string>
     <string name="show_button1_description">Alternar la visibilidad del botón 1 en Discord Rich Presence</string>
     <string name="show_button2_description">Alternar la visibilidad del botón 2 en Discord Rich Presence</string>
     <string name="discord_activity_type">Tipo de actividad</string>
@@ -705,7 +705,7 @@
     <string name="remove_from_speed_dial">Eliminar de los contactos de marcación rápida</string>
     <string name="sort_by_most_played">Los más escuchados</string>
     <string name="no_matching_playlists">No hay listas de reproducción que coincidan</string>
-    <string name="nomatune_canvas_v7_desc">No disponible con el estilo de reproductor «Inmersivo»</string>
+    <string name="pixelmusic_canvas_v7_desc">No disponible con el estilo de reproductor «Inmersivo»</string>
     <string name="blur_intensity">Intensidad del desenfoque</string>
     <string name="blur_intensity_value">%1$d dp</string>
     <string name="slider_style_standard">Estandar</string>

@@ -31,7 +31,7 @@ import com.shahdullah.nomatune.canvas.models.CanvasArtwork
 import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
 
-object NomaTuneCanvas {
+object PixelMusicCanvas {
     private const val BASE_URL = "https://artwork-nomatune.koiiverse.cloud/"
     private const val FALLBACK_URL = "https://artwork.boidu.dev/"
 

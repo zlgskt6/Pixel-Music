@@ -648,9 +648,9 @@
     <string name="pitch">Pas</string>
     <string name="pitch_mode_semitones_short">dt</string>
     <string name="pitch_mode_multiplier_short">x</string>
-    <string name="nomatune_canvas_desc">Animer les pochettes d\'album pendant la lecture (technologie BetterLyrics)</string>
+    <string name="pixelmusic_canvas_desc">Animer les pochettes d\'album pendant la lecture (technologie BetterLyrics)</string>
     <string name="restore_success">Sauvegarde restaurée avec succès</string>
-    <string name="nomatune_canvas">Pixel Music Canvas</string>
+    <string name="pixelmusic_canvas">Pixel Music Canvas</string>
     <string name="change_playlist_cover">Changer la couverture de la playlist</string>
     <string name="remove_playlist_cover">Retirer la couverture</string>
     <string name="together_participants">Participants</string>
@@ -804,7 +804,7 @@
     <string name="external_downloader_not_installed">L\'application de téléchargement externe n\'est pas installée.</string>
     <string name="external_downloader_not_configured">Aucun téléchargeur externe n\'est configuré. Configurez-en un dans Paramètres → Lecteur.</string>
     <string name="open_youtube_music">Ouvrir YouTube Music</string>
-    <string name="nomatune_canvas_v7_desc">Non disponible avec le style de lecteur immersif</string>
+    <string name="pixelmusic_canvas_v7_desc">Non disponible avec le style de lecteur immersif</string>
     <string name="po_token_account_notice_title">Utiliser le même compte</string>
     <string name="po_token_account_notice_body">Connectez-vous ici avec le même compte Google que celui que vous utilisez déjà pour YouTube Music dans Pixel Music avant de générer un jeton PO.</string>
     <string name="po_token_account_notice_same_account">Si cette WebView utilise un autre compte, le jeton généré ne fonctionnera pas correctement.</string>

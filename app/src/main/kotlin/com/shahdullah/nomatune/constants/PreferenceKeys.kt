@@ -38,8 +38,8 @@ val SliderStyleKey = stringPreferencesKey("sliderStyle")
 val SwipeToSongKey = booleanPreferencesKey("SwipeToSong")
 val PlayerDesignStyleKey = stringPreferencesKey("playerDesignStyle")
 val HidePlayerThumbnailKey = booleanPreferencesKey("hidePlayerThumbnail")
-val NomaTuneCanvasKey = booleanPreferencesKey("archiveTuneCanvas")
-val ArchiveTuneCanvasKey = NomaTuneCanvasKey
+val PixelMusicCanvasKey = booleanPreferencesKey("archiveTuneCanvas")
+val ArchiveTuneCanvasKey = PixelMusicCanvasKey
 val ThumbnailCornerRadiusKey = floatPreferencesKey("thumbnailCornerRadius")
 val CropThumbnailToSquareKey = booleanPreferencesKey("cropThumbnailToSquare")
 
@@ -853,7 +853,7 @@ val TogetherOnlineEndpointCacheKey = stringPreferencesKey("together_online_endpo
 val TogetherOnlineEndpointLastCheckedAtKey = longPreferencesKey("together_online_endpoint_last_checked_at")
 
 
-val NomaTuneOnboardingCompletedKey = OnboardingCompletedKey
+val PixelMusicOnboardingCompletedKey = OnboardingCompletedKey
 val DiscordPresenceIntervalValueKey = stringPreferencesKey("discordPresenceIntervalValue")
 val DiscordPresenceIntervalUnitKey = stringPreferencesKey("discordPresenceIntervalUnit")
 val ShowLikedPlaylistKey = booleanPreferencesKey("showLikedPlaylist")

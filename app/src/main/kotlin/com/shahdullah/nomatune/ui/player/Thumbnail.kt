@@ -97,7 +97,7 @@ import com.shahdullah.nomatune.constants.PlayerDesignStyleKey
 import com.shahdullah.nomatune.constants.PlayerHorizontalPadding
 import com.shahdullah.nomatune.constants.SeekExtraSeconds
 import com.shahdullah.nomatune.constants.SwipeThumbnailKey
-import com.shahdullah.nomatune.constants.NomaTuneCanvasKey
+import com.shahdullah.nomatune.constants.PixelMusicCanvasKey
 import com.shahdullah.nomatune.constants.MaxCanvasCacheSizeKey
 import com.shahdullah.nomatune.constants.ThumbnailCornerRadiusKey
 import com.shahdullah.nomatune.constants.CropThumbnailToSquareKey
@@ -153,7 +153,7 @@ fun Thumbnail(
     val (enableHapticFeedback) = rememberPreference(EnableHapticFeedbackKey, true)
 
     val hidePlayerThumbnail by rememberPreference(HidePlayerThumbnailKey, false)
-    val nomaTuneCanvasEnabled by rememberPreference(NomaTuneCanvasKey, false)
+    val pixelMusicCanvasEnabled by rememberPreference(PixelMusicCanvasKey, false)
     val lowDataModeActive = rememberLowDataModeActive()
     val playerDesignStyle by rememberEnumPreference(
         key = PlayerDesignStyleKey,
@@ -407,7 +407,7 @@ fun Thumbnail(
                                     if (country.length == 2) country.lowercase(Locale.ROOT) else "us"
                                 }
                             val shouldAnimateCanvas =
-                                nomaTuneCanvasEnabled &&
+                                pixelMusicCanvasEnabled &&
                                     !lowDataModeActive &&
                                     playerDesignStyle != PlayerDesignStyle.V7 &&
                                     playerDesignStyle != PlayerDesignStyle.V8 &&

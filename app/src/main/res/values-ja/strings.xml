@@ -451,9 +451,9 @@
     <string name="custom_value">カスタム値</string>
     <string name="new_library_design">新しいライブラリのデザイン</string>
     <string name="new_library_design_description">新しいライブラリ設計を有効にします (不安定になる可能性があります)</string>
-    <string name="nomatune_canvas">Pixel Music キャンバス</string>
-    <string name="nomatune_canvas_desc">再生中にアルバムのアートワークをアニメーション化 (Powered by BetterLyrics)</string>
-    <string name="nomatune_canvas_v7_desc">イマーシブ プレーヤー スタイルでは利用できません</string>
+    <string name="pixelmusic_canvas">Pixel Music キャンバス</string>
+    <string name="pixelmusic_canvas_desc">再生中にアルバムのアートワークをアニメーション化 (Powered by BetterLyrics)</string>
+    <string name="pixelmusic_canvas_v7_desc">イマーシブ プレーヤー スタイルでは利用できません</string>
     <string name="show_button1_description">Discord リッチ プレゼンスのボタン 1 の表示を切り替えます</string>
     <string name="show_button2_description">Discord リッチ プレゼンスのボタン 2 の表示を切り替えます</string>
     <string name="discord_activity_type">アクティビティの種類</string>

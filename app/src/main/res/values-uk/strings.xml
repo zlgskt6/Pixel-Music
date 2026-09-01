@@ -178,8 +178,8 @@
     <string name="playlist_imported">Плейліст імпортовано</string>
     <string name="removed_song_from_playlist">Видалено \"%s\" з плейліста</string>
     <string name="playlist_synced">Плейліст синхронізовано</string>
-    <string name="nomatune_canvas">Pixel Music Canvas</string>
-    <string name="nomatune_canvas_desc">Анімувати обкладинку альбому під час відтворення (за технологією BetterLyrics)</string>
+    <string name="pixelmusic_canvas">Pixel Music Canvas</string>
+    <string name="pixelmusic_canvas_desc">Анімувати обкладинку альбому під час відтворення (за технологією BetterLyrics)</string>
     <string name="action_sync">Синхронізувати</string>
     <string name="advanced">Розширені налаштування</string>
     <string name="tempo_and_pitch">Темп і висота звуку</string>
@@ -356,7 +356,7 @@
     <string name="custom_value">Власне значення</string>
     <string name="new_library_design">Новий дизайн бібліотеки</string>
     <string name="new_library_design_description">Увімкнути новий дизайн бібліотеки (може працювати нестабільно)</string>
-    <string name="nomatune_canvas_v7_desc">Недоступно для стилю відтворення «Занурення»</string>
+    <string name="pixelmusic_canvas_v7_desc">Недоступно для стилю відтворення «Занурення»</string>
     <string name="show_button1_description">Увімкнути/вимкнути відображення кнопки 1 у функції «Rich Presence» Discord</string>
     <string name="show_button2_description">Увімкнути/вимкнути відображення кнопки 2 у функції «Rich Presence» Discord</string>
     <string name="discord_activity_type">Тип активності</string>

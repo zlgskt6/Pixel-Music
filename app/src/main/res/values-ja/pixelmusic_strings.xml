@@ -444,7 +444,7 @@
 
     <!-- About Screen -->
     <string name="about_lead_developer">リードデベロッパー</string>
-    <string name="about_nomatune_team">Pixel Music チーム</string>
+    <string name="about_pixelmusic_team">Pixel Music チーム</string>
     <string name="about_respecter">リスペクター</string>
     <string name="about_contributors">コントリビューター</string>
     <string name="about_position_lead_dev">えっ？</string>

@@ -342,8 +342,8 @@
     <string name="custom_value">Пользовательское</string>
     <string name="new_library_design">Новый дизайн библиотеки</string>
     <string name="new_library_design_description">Включить новый дизайн библиотеки (может быть нестабильным)</string>
-    <string name="nomatune_canvas">Pixel Music Canvas</string>
-    <string name="nomatune_canvas_desc">Анимировать обложку альбома при воспроизведении (С помощью BetterLyrics)</string>
+    <string name="pixelmusic_canvas">Pixel Music Canvas</string>
+    <string name="pixelmusic_canvas_desc">Анимировать обложку альбома при воспроизведении (С помощью BetterLyrics)</string>
     <string name="show_button1_description">Включить видимость кнопки 1 в Discord Rich Presence</string>
     <string name="show_button2_description">Включить видимость кнопки 2 в Discord Rich Presence</string>
     <string name="discord_activity_type">Тип активности</string>
@@ -756,7 +756,7 @@
     <string name="sort_order_ascending">По возрастанию</string>
     <string name="sort_order_descending">По убыванию</string>
     <string name="no_matching_playlists">Нет подходящих плейлистов</string>
-    <string name="nomatune_canvas_v7_desc">Недоступно с дизайном плеера \"Погружение\"</string>
+    <string name="pixelmusic_canvas_v7_desc">Недоступно с дизайном плеера \"Погружение\"</string>
     <string name="disable_animations">Отключить анимации</string>
     <string name="disable_animations_desc">Отключить большинство анимаций в приложении. Рекомендовано для слабых устройств</string>
     <string name="blur_intensity">Сила размытия</string>

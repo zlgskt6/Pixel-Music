@@ -12,7 +12,7 @@
 
 package com.shahdullah.nomatune.ui.player
 
-import com.shahdullah.nomatune.canvas.NomaTuneCanvas
+import com.shahdullah.nomatune.canvas.PixelMusicCanvas
 import com.shahdullah.nomatune.canvas.models.CanvasArtwork
 
 internal suspend fun fetchCanvasArtworkForPlayback(
@@ -34,7 +34,7 @@ internal suspend fun fetchCanvasArtworkForPlayback(
         }
 
     return candidates.firstNotNullOfOrNull { (song, artist) ->
-        NomaTuneCanvas
+        PixelMusicCanvas
             .getBySongArtist(
                 song = song,
                 artist = artist,

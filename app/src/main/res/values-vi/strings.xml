@@ -428,8 +428,8 @@
     <string name="discord_activity_type">Loại hoạt động</string>
     <string name="dark_theme_follow_system">Theo hệ thống</string>
     <string name="pure_black">Đen thuần</string>
-    <string name="nomatune_canvas">Pixel Music Canvas</string>
-    <string name="nomatune_canvas_desc">Tạo hiệu ứng động cho artwork album khi phát (Được hỗ trợ bởi BetterLyrics)</string>
+    <string name="pixelmusic_canvas">Pixel Music Canvas</string>
+    <string name="pixelmusic_canvas_desc">Tạo hiệu ứng động cho artwork album khi phát (Được hỗ trợ bởi BetterLyrics)</string>
     <string name="disable_blur">Tắt hiệu ứng làm mờ</string>
     <string name="disable_blur_desc">Tắt hiệu ứng làm mờ trong toàn bộ ứng dụng</string>
     <string name="customize_navigation_tabs">Tùy chỉnh tab điều hướng</string>
@@ -842,7 +842,7 @@
     <string name="remove_from_speed_dial">Xóa khỏi Speed Dial</string>
     <string name="sort_by_most_played">Phát nhiều nhất</string>
     <string name="no_matching_playlists">Không tìm thấy danh sách phát phù hợp</string>
-    <string name="nomatune_canvas_v7_desc">Không khả dụng với phong cách Immersive</string>
+    <string name="pixelmusic_canvas_v7_desc">Không khả dụng với phong cách Immersive</string>
     <string name="blur_intensity">Cường độ mờ</string>
     <string name="blur_intensity_value">%1$d dp</string>
     <string name="slider_style_standard">Tiêu chuẩn</string>

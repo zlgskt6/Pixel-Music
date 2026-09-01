@@ -285,7 +285,7 @@ private fun YearInMusicRecapScreen(
                                 val uri = ComposeToImage.saveBitmapAsFile(
                                     context = context,
                                     bitmap = fitted,
-                                    fileName = "NomaTune_YearInMusic_${content.selectedYear}_${currentPage + 1}",
+                                    fileName = "PixelMusic_YearInMusic_${content.selectedYear}_${currentPage + 1}",
                                 )
                                 val shareIntent = Intent(Intent.ACTION_SEND).apply {
                                     type = "image/png"

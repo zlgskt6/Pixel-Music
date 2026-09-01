@@ -384,9 +384,9 @@
     <string name="custom_value">맞춤 값</string>
     <string name="new_library_design">새로운 도서관 디자인</string>
     <string name="new_library_design_description">새 라이브러리 디자인 활성화(불안정할 수 있음)</string>
-    <string name="nomatune_canvas">Pixel Music 캔버스</string>
-    <string name="nomatune_canvas_desc">재생하는 동안 앨범 아트워크에 애니메이션 적용(Powered by BetterLyrics)</string>
-    <string name="nomatune_canvas_v7_desc">몰입형 플레이어 스타일에서는 사용할 수 없습니다.</string>
+    <string name="pixelmusic_canvas">Pixel Music 캔버스</string>
+    <string name="pixelmusic_canvas_desc">재생하는 동안 앨범 아트워크에 애니메이션 적용(Powered by BetterLyrics)</string>
+    <string name="pixelmusic_canvas_v7_desc">몰입형 플레이어 스타일에서는 사용할 수 없습니다.</string>
     <string name="show_button1_description">Discord Rich Presence에서 버튼 1의 가시성을 전환합니다.</string>
     <string name="show_button2_description">Discord Rich Presence에서 버튼 2의 가시성을 전환합니다.</string>
     <string name="discord_activity_type">활동 유형</string>
