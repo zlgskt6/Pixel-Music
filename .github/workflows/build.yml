@@ -1,4 +1,4 @@
-name: Build NomaTune APK
+name: Build Pixel Music APK
 
 on:
   push:
@@ -45,7 +45,7 @@ jobs:
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: NomaTune-debug
+          name: Pixel-Music-debug
           path: app/build/outputs/apk/gmsMobileUniversal/debug/*.apk
           if-no-files-found: error
           retention-days: 14
