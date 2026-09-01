@@ -74,14 +74,14 @@ jobs:
             echo "KEY_PASSWORD=$KEY_PASSWORD"            >> "$GITHUB_ENV"
           else
             keytool -genkeypair -v \
-              -keystore /tmp/release.jks -alias nomatune \
+              -keystore /tmp/release.jks -alias pixelmusic \
               -keyalg RSA -keysize 2048 -validity 10000 \
-              -dname "CN=NomaTune,O=Shahdullah,C=US" \
-              -storepass nomatune123 -keypass nomatune123 2>/dev/null
+              -dname "CN=Pixel Music,O=zlgskt6,C=US" \
+              -storepass pixelmusic123 -keypass pixelmusic123 2>/dev/null
             echo "KEYSTORE_PATH=/tmp/release.jks" >> "$GITHUB_ENV"
-            echo "KEYSTORE_PASSWORD=nomatune123"  >> "$GITHUB_ENV"
-            echo "KEY_ALIAS=nomatune"             >> "$GITHUB_ENV"
-            echo "KEY_PASSWORD=nomatune123"       >> "$GITHUB_ENV"
+            echo "KEYSTORE_PASSWORD=pixelmusic123"  >> "$GITHUB_ENV"
+            echo "KEY_ALIAS=pixelmusic"             >> "$GITHUB_ENV"
+            echo "KEY_PASSWORD=pixelmusic123"       >> "$GITHUB_ENV"
             echo "::warning::No KEYSTORE secret set — APK signed with a temporary key."
           fi
 
@@ -204,5 +204,5 @@ jobs:
           draft: false
           prerelease: false
           generate_release_notes: false
-          body: |
+          body: "Pixel Music Release v${{ steps.ver.outputs.version }}"
           files: release-apks/*.apk
