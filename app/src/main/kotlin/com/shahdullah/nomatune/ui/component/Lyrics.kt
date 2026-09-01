@@ -194,7 +194,7 @@ import com.shahdullah.nomatune.ui.component.shimmer.TextPlaceholder
 import com.shahdullah.nomatune.ui.menu.LyricsMenu
 import com.shahdullah.nomatune.ui.screens.settings.DarkMode
 import com.shahdullah.nomatune.ui.screens.settings.LyricsPosition
-import com.shahdullah.nomatune.ui.theme.rememberNomaTuneLyricsFontFamily
+import com.shahdullah.nomatune.ui.theme.rememberPixelMusicLyricsFontFamily
 import com.shahdullah.nomatune.ui.utils.fadingEdge
 import com.shahdullah.nomatune.ui.utils.smoothFadingEdge
 import com.shahdullah.nomatune.utils.ComposeToImage
@@ -473,7 +473,7 @@ fun Lyrics(
     val lyricsLineSpacing by rememberPreference(LyricsLineSpacingKey, 1.3f)
     val lyricsLineBlur by rememberPreference(LyricsLineBlurKey, true)
     val animationsDisabled = LocalAnimationsDisabled.current
-    val lyricsFontFamily = rememberNomaTuneLyricsFontFamily()
+    val lyricsFontFamily = rememberPixelMusicLyricsFontFamily()
 
     val verticalLineSpacing = with(LocalDensity.current) {
         (lyricsTextSize.sp * (lyricsLineSpacing - 1f)).toDp().coerceAtLeast(0.dp)

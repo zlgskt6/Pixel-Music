@@ -67,7 +67,7 @@ import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.shahdullah.nomatune.R
-import com.shahdullah.nomatune.ui.theme.rememberNomaTuneLyricsFontFamily
+import com.shahdullah.nomatune.ui.theme.rememberPixelMusicLyricsFontFamily
 
 @Stable
 private data class LyricsShareColors(
@@ -162,7 +162,7 @@ fun LyricsImageCard(
 ) {
     val context = LocalContext.current
     val density = LocalDensity.current
-    val lyricsFontFamily = rememberNomaTuneLyricsFontFamily()
+    val lyricsFontFamily = rememberPixelMusicLyricsFontFamily()
     val colors =
         remember(glassStyle, textColor, secondaryTextColor) {
             LyricsShareColors(

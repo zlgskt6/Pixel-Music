@@ -156,7 +156,7 @@ import com.shahdullah.nomatune.lyrics.WordTimestamp
 import com.shahdullah.nomatune.ui.component.shimmer.ShimmerHost
 import com.shahdullah.nomatune.ui.component.shimmer.TextPlaceholder
 import com.shahdullah.nomatune.ui.screens.settings.LyricsPosition
-import com.shahdullah.nomatune.ui.theme.rememberNomaTuneLyricsFontFamily
+import com.shahdullah.nomatune.ui.theme.rememberPixelMusicLyricsFontFamily
 import com.shahdullah.nomatune.ui.utils.smoothFadingEdge
 import com.shahdullah.nomatune.utils.rememberEnumPreference
 import com.shahdullah.nomatune.utils.rememberPreference
@@ -251,7 +251,7 @@ fun LyricsV2(
             romanizeOther = romanizeOtherLanguages,
         )
     }
-    val lyricsFontFamily = rememberNomaTuneLyricsFontFamily()
+    val lyricsFontFamily = rememberPixelMusicLyricsFontFamily()
     val playerBackground by rememberEnumPreference(PlayerBackgroundStyleKey, PlayerBackgroundStyle.DEFAULT)
 
     // ── Text colour derived from background style ──

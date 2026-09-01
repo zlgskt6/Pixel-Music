@@ -139,7 +139,7 @@ import com.shahdullah.nomatune.lyrics.LyricsUtils.romanizeLyricsWordWithLineCont
 import com.shahdullah.nomatune.lyrics.LyricsUtils.shouldRomanizeLyricsLine
 import com.shahdullah.nomatune.ui.component.shimmer.ShimmerHost
 import com.shahdullah.nomatune.ui.component.shimmer.TextPlaceholder
-import com.shahdullah.nomatune.ui.theme.rememberNomaTuneLyricsFontFamily
+import com.shahdullah.nomatune.ui.theme.rememberPixelMusicLyricsFontFamily
 import com.shahdullah.nomatune.utils.rememberEnumPreference
 import com.shahdullah.nomatune.utils.rememberPreference
 import com.shahdullah.nomatune.utils.reportException
@@ -202,7 +202,7 @@ fun LyricsEnhanced(
         )
     }
 
-    val lyricsFontFamily = rememberNomaTuneLyricsFontFamily()
+    val lyricsFontFamily = rememberPixelMusicLyricsFontFamily()
 
     val playerBackground by rememberEnumPreference(PlayerBackgroundStyleKey, PlayerBackgroundStyle.DEFAULT)
     val textColor = textColorOverride ?: if (playerBackground == PlayerBackgroundStyle.DEFAULT)
