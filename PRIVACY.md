@@ -36,7 +36,7 @@ The app stores data locally to provide playback, library, search, lyrics, sync, 
 
 ## Data the App May Send Off Your Device
 
-NomaTune does not silently forward your data to unrelated services. It only contacts external services when you use online features, and the exact payload depends on the feature you use and how you configure it.
+Pixel Music does not silently forward your data to unrelated services. It only contacts external services when you use online features, and the exact payload depends on the feature you use and how you configure it.
 
 | Service or feature | Data that may be sent | When it happens |
 | --- | --- | --- |
@@ -128,7 +128,7 @@ This appendix maps the main statements above to concrete implementation surfaces
 | YouTube signed-in state | The Innertube layer exposes visitor data, data sync ID, cookie, PO token values, proxy state, and login-for-browse behavior as part of the current playback auth state. | `innertube/src/main/kotlin/moe/shahdullah/nomatune/innertube/YouTube.kt` |
 | Manual backup export | The backup view model writes app settings plus database files into a ZIP archive chosen by the user. | `app/src/main/kotlin/moe/shahdullah/nomatune/viewmodels/BackupRestoreViewModel.kt` |
 | External network integrations | Build configuration defines keys for Last.fm, Together, and canvas services. The updater fetches release information and caches related metadata in app preferences. | `app/build.gradle.kts`, `app/src/main/kotlin/moe/shahdullah/nomatune/utils/Updater.kt` |
-| Canvas service requests | The canvas module sends song and artist names, album IDs, or album URLs to `https://artwork-nomatune.koiiverse.cloud/` and can attach a bearer token. | `canvas/src/main/kotlin/moe/shahdullah/nomatune/canvas/NomaTuneCanvas.kt` |
+| Canvas service requests | The canvas module sends song and artist names, album IDs, or album URLs to `https://artwork-nomatune.koiiverse.cloud/` and can attach a bearer token. | `canvas/src/main/kotlin/moe/shahdullah/nomatune/canvas/Pixel MusicCanvas.kt` |
 | Public feature claims | The repository README and store metadata describe privacy, YouTube integration, lyrics, music recognition, Last.fm, ListenBrainz, Discord Rich Presence, and other network-backed features that must stay aligned with this notice. | `README.md`, `fastlane/metadata/android/en-US/full_description.txt` |
 | Current dependency posture | The current Android dependency declarations show Compose, Room, Hilt, Ktor, Media3, Coil, Timber, and related libraries. They do not currently show Firebase, Crashlytics, Sentry, mobile ad SDKs, or mobile analytics SDKs in the Android app dependency definitions reviewed for this notice. | `app/build.gradle.kts`, `gradle/libs.versions.toml` |
 
