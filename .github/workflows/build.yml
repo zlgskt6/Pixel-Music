@@ -40,7 +40,7 @@ jobs:
 
       # Build GMS / Mobile / Universal debug APK for CI verification
       - name: Build debug APK
-        run: ./gradlew assembleGmsMobileUniversalDebug --stacktrace --no-configuration-cache
+        run: ./gradlew assembleGmsMobileUniversalDebug --stacktrace --no-daemon --no-configuration-cache
         continue-on-error: true
 
       - name: Upload debug APK

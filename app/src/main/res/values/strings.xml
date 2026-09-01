@@ -1028,8 +1028,8 @@
     <string name="small">Small</string>
     <string name="viewCountText">%s views</string>
 
-    <string name="archivetune_canvas">Pixel Music Canvas</string>
-    <string name="archivetune_canvas_desc">Animate album artwork while playing (Powered by BetterLyrics)</string>
+    <string name="pixelmusic_canvas">Pixel Music Canvas</string>
+    <string name="pixelmusic_canvas_desc">Animate album artwork while playing (Powered by BetterLyrics)</string>
     <string name="build_your_mix_manual_required">Please enter an artist, genre, or mood to build your mix</string>
     <string name="build_your_mix_no_manual_match">No songs found matching your input</string>
     <string name="build_your_mix_failed">Failed to build mix</string>

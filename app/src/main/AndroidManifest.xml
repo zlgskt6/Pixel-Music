@@ -80,6 +80,9 @@
 
                 <data android:scheme="pixelmusic" android:host="together" />
                 <data android:scheme="pixelmusic" android:host="login" />
+                <data android:scheme="pixelmusic" android:host="search" />
+                <data android:scheme="pixelmusic" android:host="library" />
+                <data android:scheme="pixelmusic" android:host="music_recognition" />
             </intent-filter>
 
             <!-- Youtube filter -->

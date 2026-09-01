@@ -1,5 +1,5 @@
 /*
- * NomaTune (2026)
+ * Pixel Music (2026)
  * © Shahdullah — github.com/shahdullah
  * GPL-3.0 License | Contributors: see git history
  * Do not remove or alter this notice. - Per GPL-3.0 Section 4 & Section 5
@@ -32,7 +32,7 @@ import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
 
 object PixelMusicCanvas {
-    private const val BASE_URL = "https://artwork-nomatune.koiiverse.cloud/"
+    private const val BASE_URL = "https://artwork-pixelmusic.koiiverse.cloud/"
     private const val FALLBACK_URL = "https://artwork.boidu.dev/"
 
     @Volatile

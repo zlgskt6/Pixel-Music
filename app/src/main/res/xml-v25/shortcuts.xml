@@ -6,7 +6,8 @@
         android:shortcutId="search"
         android:shortcutShortLabel="@string/search">
         <intent
-            android:action="com.shahdullah.nomatune.action.SEARCH"
+            android:action="android.intent.action.VIEW"
+            android:data="pixelmusic://search"
             android:targetClass="com.shahdullah.nomatune.MainActivity"
             android:targetPackage="com.shahdullah.nomatune" />
     </shortcut>
@@ -16,7 +17,8 @@
         android:shortcutId="library"
         android:shortcutShortLabel="@string/filter_library">
         <intent
-            android:action="com.shahdullah.nomatune.action.LIBRARY"
+            android:action="android.intent.action.VIEW"
+            android:data="pixelmusic://library"
             android:targetClass="com.shahdullah.nomatune.MainActivity"
             android:targetPackage="com.shahdullah.nomatune" />
     </shortcut>
@@ -26,7 +28,8 @@
         android:shortcutId="music_recognition"
         android:shortcutShortLabel="@string/music_recognition">
         <intent
-            android:action="com.shahdullah.nomatune.action.MUSIC_RECOGNITION"
+            android:action="android.intent.action.VIEW"
+            android:data="pixelmusic://music_recognition"
             android:targetClass="com.shahdullah.nomatune.MainActivity"
             android:targetPackage="com.shahdullah.nomatune" />
     </shortcut>

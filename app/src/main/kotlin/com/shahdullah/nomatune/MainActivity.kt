@@ -2133,16 +2133,31 @@ class MainActivity : ComponentActivity() {
         val coroutineScope = lifecycleScope
 
         val authority = uri.authority?.lowercase()
-        if (uri.scheme.equals("pixelmusic", ignoreCase = true) && authority == "together") {
-            pendingTogetherJoinLink = uri.toString()
-            startMusicServiceSafely()
-            joinPendingTogetherIfReady()
-            return
-        }
-
-        if (uri.scheme.equals("pixelmusic", ignoreCase = true) && authority == "login") {
-            navController.navigate(buildLoginRoute(uri.getQueryParameter(LOGIN_URL_ARGUMENT)))
-            return
+        if (uri.scheme.equals("pixelmusic", ignoreCase = true)) {
+            when (authority) {
+                "together" -> {
+                    pendingTogetherJoinLink = uri.toString()
+                    startMusicServiceSafely()
+                    joinPendingTogetherIfReady()
+                    return
+                }
+                "login" -> {
+                    navController.navigate(buildLoginRoute(uri.getQueryParameter(LOGIN_URL_ARGUMENT)))
+                    return
+                }
+                "search" -> {
+                    navController.navigate(Screens.Search.route)
+                    return
+                }
+                "library" -> {
+                    navController.navigate(Screens.Library.route)
+                    return
+                }
+                "music_recognition" -> {
+                    navController.openMusicRecognition()
+                    return
+                }
+            }
         }
 
         when (val path = uri.pathSegments.firstOrNull()) {

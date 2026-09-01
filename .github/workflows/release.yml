@@ -90,7 +90,7 @@ jobs:
         run: |
           set -euo pipefail
           GRADLE_TASK="${{ steps.variant.outputs.gradle_task }}"
-          ./gradlew "$GRADLE_TASK" --stacktrace --no-configuration-cache
+          ./gradlew "$GRADLE_TASK" --stacktrace --no-daemon --no-configuration-cache
         env:
           LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
           LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
