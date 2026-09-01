@@ -501,7 +501,7 @@ fun LyricsEnhanced(
     val plainLyrics = remember(lyricsEntries, isSynced) {
         PlainLyrics(
             items = if (isSynced) {
-                emptyList()
+                emptyList<PlainLyricLine>()
             } else {
                 lyricsEntries.mapIndexedNotNull { index, entry ->
                     val text = entry.text.trim()

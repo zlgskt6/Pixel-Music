@@ -62,6 +62,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.shape.RoundedCornerShape
 import com.shahdullah.nomatune.ui.theme.PixelMusicTheme
+import com.shahdullah.nomatune.formatVersionName
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

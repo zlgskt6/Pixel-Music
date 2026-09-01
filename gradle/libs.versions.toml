@@ -1,5 +1,5 @@
 [versions]
-agp = "9.3.2"
+agp = "8.7.3"
 annotation = "1.10.0"
 json = "20250517"
 kotlin = "2.4.0"

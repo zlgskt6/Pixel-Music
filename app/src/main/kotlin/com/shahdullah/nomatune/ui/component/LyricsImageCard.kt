@@ -155,7 +155,7 @@ fun LyricsImageCard(
     songTitle: String,
     artistName: String,
     coverArtUrl: String?,
-    glassStyle: LyricsGlassStyle = LyricsGlassStyle.FrostedDark,
+    lyricGlassStyle: LyricsGlassStyle = LyricsGlassStyle.FrostedDark,
     shareOptions: LyricsShareImageOptions = LyricsShareImageOptions(),
     textColor: Color? = null,
     secondaryTextColor: Color? = null,
@@ -164,17 +164,17 @@ fun LyricsImageCard(
     val density = LocalDensity.current
     val lyricsFontFamily = rememberPixelMusicLyricsFontFamily()
     val colors =
-        remember(glassStyle, textColor, secondaryTextColor) {
+        remember(lyricGlassStyle, textColor, secondaryTextColor) {
             LyricsShareColors(
-                main = textColor ?: glassStyle.textColor,
-                secondary = secondaryTextColor ?: glassStyle.secondaryTextColor,
-                panel = glassStyle.surfaceTint.copy(alpha = glassStyle.surfaceAlpha),
-                overlay = glassStyle.overlayColor.copy(alpha = glassStyle.overlayAlpha),
-                fallbackBackground = glassStyle.surfaceTint.copy(alpha = (glassStyle.surfaceAlpha + 0.18f).coerceIn(0f, 1f)),
+                main = textColor ?: lyricGlassStyle.textColor,
+                secondary = secondaryTextColor ?: lyricGlassStyle.secondaryTextColor,
+                panel = lyricGlassStyle.surfaceTint.copy(alpha = lyricGlassStyle.surfaceAlpha),
+                overlay = lyricGlassStyle.overlayColor.copy(alpha = lyricGlassStyle.overlayAlpha),
+                fallbackBackground = lyricGlassStyle.surfaceTint.copy(alpha = (lyricGlassStyle.surfaceAlpha + 0.18f).coerceIn(0f, 1f)),
             )
         }
-    val dimAlpha = remember(glassStyle.backgroundDimAlpha, shareOptions.sanitizedDimAmount) {
-        (glassStyle.backgroundDimAlpha * shareOptions.sanitizedDimAmount).coerceIn(0f, 0.95f)
+    val dimAlpha = remember(lyricGlassStyle.backgroundDimAlpha, shareOptions.sanitizedDimAmount) {
+        (lyricGlassStyle.backgroundDimAlpha * shareOptions.sanitizedDimAmount).coerceIn(0f, 0.95f)
     }
     val backgroundBlur = rememberNativeBlurEffect(shareOptions.sanitizedBlurRadius)
     val panelBlur = rememberNativeBlurEffect((shareOptions.sanitizedBlurRadius + 10f).coerceIn(8f, 48f))
@@ -218,7 +218,7 @@ fun LyricsImageCard(
                 modifier =
                     Modifier
                         .fillMaxSize()
-                        .background(if (glassStyle.isDark) Color.Black.copy(alpha = dimAlpha) else Color.White.copy(alpha = dimAlpha * 0.42f)),
+                        .background(if (lyricGlassStyle.isDark) Color.Black.copy(alpha = dimAlpha) else Color.White.copy(alpha = dimAlpha * 0.42f)),
             )
 
             Box(
@@ -372,7 +372,7 @@ fun LyricsImageCard(
                                 modifier = Modifier.size(15.dp),
                                 colorFilter =
                                     ColorFilter.tint(
-                                        if (glassStyle.isDark) Color.Black.copy(alpha = 0.85f) else Color.White.copy(alpha = 0.9f),
+                                        if (lyricGlassStyle.isDark) Color.Black.copy(alpha = 0.85f) else Color.White.copy(alpha = 0.9f),
                                     ),
                             )
                         }

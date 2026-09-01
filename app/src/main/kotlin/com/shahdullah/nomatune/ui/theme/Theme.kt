@@ -50,6 +50,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import com.shahdullah.nomatune.constants.AppFontPreference
+import com.shahdullah.nomatune.ui.theme.CustomFontLoader
 import kotlin.math.abs
 import kotlin.math.min
 

@@ -1097,12 +1097,12 @@ fun Lyrics(
                                                 // Add space at CJK↔Latin boundaries
                                                 val currEdge = if (lineIsRtl) word.text.firstOrNull() else word.text.lastOrNull()
                                                 val neighborEdge = if (lineIsRtl) prevText?.lastOrNull() else nextText?.firstOrNull()
-                                                val neighbor = if (lineIsRtl) prevText else nextText
+                                                val neighbor: String? = (if (lineIsRtl) prevText else nextText)
                                                 currEdge != null && neighborEdge != null && neighbor != null &&
                                                     (currEdge.code < 0x3000 || neighborEdge.code < 0x3000) &&
                                                     shouldAppendWordSpace(
-                                                        if (lineIsRtl) neighbor else word.text,
-                                                        if (lineIsRtl) word.text else neighbor
+                                                        if (lineIsRtl) neighbor!! else word.text,
+                                                        if (lineIsRtl) word.text else neighbor!!
                                                     )
                                             } else if (lineIsRtl) {
                                                 prevText != null && shouldAppendWordSpace(prevText, word.text)

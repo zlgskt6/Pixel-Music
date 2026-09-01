@@ -95,11 +95,11 @@ private sealed class BackupScreenState {
 private fun RestoreBackupFileScreen(
     uri: Uri,
     onNavigateBack: () -> Unit,
-    viewModel: BackupRestoreViewModel = hiltViewModel(),
+    viewModel: BackupRestoreViewModel = hiltViewModel<BackupRestoreViewModel>(),
 ) {
     val context = LocalContext.current
     var screenState by remember { mutableStateOf<BackupScreenState>(BackupScreenState.Validating) }
-    var selectedCategories by remember { mutableStateOf(BackupCategory.entries.toSet()) }
+    var selectedCategories by remember { mutableStateOf<Set<BackupCategory>>(BackupCategory.entries.toSet()) }
     var showRestoreDialog by remember { mutableStateOf(false) }
 
     val backupRestoreProgress by viewModel.backupRestoreProgress.collectAsStateWithLifecycle()
