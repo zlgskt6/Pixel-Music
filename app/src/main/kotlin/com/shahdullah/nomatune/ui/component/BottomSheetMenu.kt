@@ -1,0 +1,138 @@
+/*
+ * Pixel Music (2026)
+ * © Shahdullah — github.com/shahdullah
+ * GPL-3.0 License | Contributors: see git history
+ * Do not remove or alter this notice. - Per GPL-3.0 Section 4 & Section 5
+ *
+ * Based on ArchiveTune (2026)
+ * © Rukamori — github.com/rukamori
+ * GPL-3.0 License | Contributors: see git history
+ * Do not remove or alter this notice. - Per GPL-3.0 Section 4 & Section 5
+ */
+
+package com.shahdullah.nomatune.ui.component
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
+
+val LocalMenuState = compositionLocalOf { MenuState() }
+
+@Stable
+class MenuState(
+    isVisible: Boolean = false,
+    content: @Composable ColumnScope.() -> Unit = {},
+) {
+    var isVisible by mutableStateOf(isVisible)
+    var isDismissing by mutableStateOf(false)
+    var content by mutableStateOf(content)
+    var dismissAction: (() -> Unit)? = null
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun show(content: @Composable ColumnScope.() -> Unit) {
+        isDismissing = false
+        isVisible = true
+        this.content = content
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun dismiss() {
+        val action = dismissAction
+        if (action != null) {
+            action()
+        } else {
+            isDismissing = false
+            isVisible = false
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BottomSheetMenu(
+    modifier: Modifier = Modifier,
+    state: MenuState,
+    background: Color = MaterialTheme.colorScheme.surface,
+) {
+    val focusManager = LocalFocusManager.current
+    val coroutineScope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    val handleDismiss: () -> Unit = {
+        coroutineScope.launch {
+            try {
+                state.isDismissing = true
+                sheetState.hide()
+            } catch (_: Throwable) {
+            } finally {
+                focusManager.clearFocus()
+                state.isVisible = false
+                state.isDismissing = false
+            }
+        }
+    }
+
+    DisposableEffect(state, sheetState) {
+        state.dismissAction = {
+            handleDismiss()
+        }
+        onDispose {
+            state.dismissAction = null
+        }
+    }
+
+    if (state.isVisible) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                focusManager.clearFocus()
+                state.isDismissing = true
+                state.isVisible = false
+            },
+            sheetState = sheetState,
+            containerColor = background,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            dragHandle = {
+                Box(
+                    modifier = Modifier
+                        .padding(vertical = 12.dp)
+                        .size(width = 40.dp, height = 4.dp)
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
+                )
+            },
+            modifier = modifier.fillMaxHeight()
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+            ) {
+                state.content(this)
+            }
+        }
+    }
+}

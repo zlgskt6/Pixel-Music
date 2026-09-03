@@ -1,0 +1,6 @@
+{
+  "name": "Pixel Music",
+  "description": "A feature-rich YouTube Music and offline audio player for Android built with Jetpack Compose.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
