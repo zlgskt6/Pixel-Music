@@ -72,14 +72,7 @@ fun buildSettingsGroups(
                         accentColor = MaterialTheme.colorScheme.tertiary,
                         onClick = { navController.navigate("settings/player") },
                     ),
-                    SettingsItem(
-                        key = "behavior",
-                        icon = painterResource(R.drawable.swipe),
-                        title = stringResource(R.string.settings_behavior_title),
-                        subtitle = stringResource(R.string.settings_behavior_subtitle),
-                        accentColor = MaterialTheme.colorScheme.primary,
-                        onClick = { navController.navigate("settings/privacy") },
-                    ),
+
 
                     SettingsItem(
                         key = "backup_restore",
