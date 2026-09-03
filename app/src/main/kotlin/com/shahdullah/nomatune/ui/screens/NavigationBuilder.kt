@@ -81,6 +81,7 @@ import com.shahdullah.nomatune.ui.screens.search.OnlineSearchResultRoutePrefix
 import com.shahdullah.nomatune.ui.screens.search.OnlineSearchResult
 import com.shahdullah.nomatune.ui.screens.search.SearchScreen
 
+import com.shahdullah.nomatune.ui.screens.settings.AboutScreen
 import com.shahdullah.nomatune.ui.screens.settings.AccountSettings
 import com.shahdullah.nomatune.ui.screens.settings.AiIntegrationSettings
 import com.shahdullah.nomatune.ui.screens.settings.AodCustomizedScreen
@@ -123,7 +124,15 @@ fun NavGraphBuilder.navigationBuilder(
     homeViewModel: HomeViewModel? = null,
 ) {
     composable(Screens.Home.route) {
-        val activity = LocalContext.current as? ComponentActivity
+        val context = LocalContext.current
+        val activity = remember(context) {
+            var ctx = context
+            while (ctx is android.content.ContextWrapper) {
+                if (ctx is ComponentActivity) return@remember ctx
+                ctx = ctx.baseContext
+            }
+            null
+        }
         val vm: HomeViewModel = homeViewModel
             ?: if (activity != null) hiltViewModel(activity) else hiltViewModel()
         HomeScreen(navController, viewModel = vm)
@@ -366,6 +375,9 @@ fun NavGraphBuilder.navigationBuilder(
     }
     composable("settings") {
         SettingsScreen(navController, scrollBehavior, latestVersionName())
+    }
+    composable("settings/about") {
+        AboutScreen(navController)
     }
     composable("settings/account") {
         AccountSettings(navController, scrollBehavior, latestVersionName())

@@ -176,6 +176,17 @@ fun buildSettingsGroups(
                         )
                     }
 
+                    add(
+                        SettingsItem(
+                            key = "about",
+                            icon = painterResource(R.drawable.info),
+                            title = stringResource(R.string.about),
+                            subtitle = stringResource(R.string.settings_about_subtitle),
+                            accentColor = MaterialTheme.colorScheme.primary,
+                            onClick = { navController.navigate("settings/about") },
+                        ),
+                    )
+
                 },
             ),
         )
