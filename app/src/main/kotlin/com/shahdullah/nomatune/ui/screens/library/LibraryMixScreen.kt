@@ -116,7 +116,6 @@ fun LibraryMixScreen(
     val artists by viewModel.artists.collectAsStateWithLifecycle()
     val playlists by viewModel.playlists.collectAsStateWithLifecycle()
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
-    val topMixesUiState by viewModel.topMixesUiState.collectAsStateWithLifecycle()
     
     val filteredPlaylistIds by database.playlistIdsByTags(
         if (selectedTagIds.isEmpty()) emptyList() else selectedTagIds.toList(),
@@ -258,18 +257,7 @@ fun LibraryMixScreen(
                 }
             }
 
-            item(key = "top_mixes") {
-                TopMixesForYouSection(
-                    state = topMixesUiState,
-                    onPlayMix = { mix ->
-                        playerConnection.playQueue(
-                            ListQueue(
-                                items = mix.tracks.map { it.toMediaItem() },
-                            ),
-                        )
-                    },
-                )
-            }
+
 
             // Playlists Row
             if (visiblePlaylists.isNotEmpty()) {
@@ -545,183 +533,7 @@ fun LibraryMixScreen(
     }
 }
 
-@Composable
-private fun TopMixesForYouSection(
-    state: LibraryTopMixesUiState,
-    onPlayMix: (LibraryTopMixUiModel) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    when (state) {
-        LibraryTopMixesUiState.Loading -> Unit
-        LibraryTopMixesUiState.Empty -> TopMixesMessageSection(
-            message = stringResource(R.string.build_your_mix_empty_library),
-            modifier = modifier,
-        )
-        is LibraryTopMixesUiState.Error -> TopMixesMessageSection(
-            message = state.message,
-            modifier = modifier,
-        )
-        is LibraryTopMixesUiState.Success -> {
-            if (state.mixes.isEmpty()) {
-                TopMixesMessageSection(
-                    message = stringResource(R.string.build_your_mix_empty_library),
-                    modifier = modifier,
-                )
-            } else {
-                Column(modifier = modifier.fillMaxWidth()) {
-                    Text(
-                        text = stringResource(R.string.top_mixes),
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
-                        color = MaterialTheme.colorScheme.onBackground,
-                    )
-                    LazyRow(
-                        contentPadding = PaddingValues(horizontal = 24.dp),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        items(
-                            items = state.mixes,
-                            key = { mix -> mix.id },
-                            contentType = { "library_top_mix" },
-                        ) { mix ->
-                            LibraryTopMixCard(
-                                mix = mix,
-                                onPlay = { onPlayMix(mix) },
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 
-@Composable
-private fun TopMixesMessageSection(
-    message: String,
-    modifier: Modifier = Modifier,
-) {
-    Column(modifier = modifier.fillMaxWidth()) {
-        Text(
-            text = stringResource(R.string.top_mixes),
-            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
-            color = MaterialTheme.colorScheme.onBackground,
-        )
-        Text(
-            text = message,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(horizontal = 24.dp),
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-        )
-    }
-}
-
-@Composable
-private fun LibraryTopMixCard(
-    mix: LibraryTopMixUiModel,
-    onPlay: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val isPressed by interactionSource.collectIsPressedAsState()
-    val scale by animateFloatAsState(
-        targetValue = if (isPressed) 0.97f else 1.0f,
-        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow),
-        label = "LibraryTopMixCardScale",
-    )
-
-    Box(
-        modifier = modifier
-            .width(180.dp)
-            .height(130.dp)
-            .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-            }
-            .clip(RoundedCornerShape(32.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f))
-            .clickable(
-                interactionSource = interactionSource,
-                indication = null,
-                onClick = onPlay,
-            )
-            .padding(16.dp),
-    ) {
-        Column(
-            modifier = Modifier.fillMaxHeight(),
-            verticalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Column {
-                Text(
-                    text = stringResource(mix.id.titleRes()),
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = stringResource(mix.id.descriptionRes()),
-                    style = MaterialTheme.typography.bodySmall,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                )
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Row(horizontalArrangement = Arrangement.spacedBy((-8).dp)) {
-                    mix.previewArtworkUrls.forEach { artworkUrl ->
-                        AsyncImage(
-                            model = artworkUrl,
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .size(28.dp)
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.18f)),
-                        )
-                    }
-                }
-
-                IconButton(
-                    onClick = onPlay,
-                    colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                    ),
-                    modifier = Modifier.size(48.dp),
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.play),
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp),
-                    )
-                }
-            }
-        }
-    }
-}
-
-private fun LibraryTopMixId.titleRes(): Int =
-    when (this) {
-        LibraryTopMixId.DAILY -> R.string.daily_mix_1
-        LibraryTopMixId.CHILL -> R.string.chill_mix
-        LibraryTopMixId.FOCUS -> R.string.focus_mix
-    }
-
-private fun LibraryTopMixId.descriptionRes(): Int =
-    when (this) {
-        LibraryTopMixId.DAILY -> R.string.daily_mix_1_desc
-        LibraryTopMixId.CHILL -> R.string.chill_mix_desc
-        LibraryTopMixId.FOCUS -> R.string.focus_mix_desc
-    }
 
 @Composable
 fun ShortcutCard(

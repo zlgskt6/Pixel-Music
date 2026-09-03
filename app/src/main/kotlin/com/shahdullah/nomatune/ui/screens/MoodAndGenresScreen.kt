@@ -1,6 +1,6 @@
 /*
  * Pixel Music (2026)
- * © Shahdullah — github.com/shahdullah
+ * © Zlgskt6 — github.com/zlgskt6
  * GPL-3.0 License | Contributors: see git history
  * Do not remove or alter this notice. - Per GPL-3.0 Section 4 & Section 5
  *
@@ -13,6 +13,7 @@
 package com.shahdullah.nomatune.ui.screens
 
 import android.net.Uri
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -21,19 +22,31 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -56,11 +69,13 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import coil3.compose.AsyncImage
@@ -71,10 +86,17 @@ import kotlinx.coroutines.withContext
 import com.shahdullah.nomatune.innertube.YouTube
 import com.shahdullah.nomatune.innertube.models.BrowseEndpoint
 import com.shahdullah.nomatune.LocalPlayerAwareWindowInsets
+import com.shahdullah.nomatune.LocalPlayerConnection
 import com.shahdullah.nomatune.R
+import com.shahdullah.nomatune.extensions.toMediaItem
+import com.shahdullah.nomatune.library.LibraryTopMixId
+import com.shahdullah.nomatune.viewmodels.LibraryTopMixUiModel
+import com.shahdullah.nomatune.playback.queues.ListQueue
 import com.shahdullah.nomatune.ui.component.NavigationTitle
 import com.shahdullah.nomatune.ui.component.shimmer.ShimmerHost
 import com.shahdullah.nomatune.ui.component.shimmer.TextPlaceholder
+import com.shahdullah.nomatune.viewmodels.LibraryMixViewModel
+import com.shahdullah.nomatune.viewmodels.LibraryTopMixesUiState
 import com.shahdullah.nomatune.viewmodels.MoodAndGenresViewModel
 import java.util.concurrent.ConcurrentHashMap
 
@@ -83,8 +105,11 @@ import java.util.concurrent.ConcurrentHashMap
 fun MoodAndGenresScreen(
     navController: NavController,
     viewModel: MoodAndGenresViewModel = hiltViewModel(),
+    libraryMixViewModel: LibraryMixViewModel = hiltViewModel(),
 ) {
     val moodAndGenres by viewModel.moodAndGenres.collectAsState()
+    val topMixesUiState by libraryMixViewModel.topMixesUiState.collectAsStateWithLifecycle()
+    val playerConnection = LocalPlayerConnection.current
     val gridState = rememberLazyGridState()
     val density = LocalDensity.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
@@ -111,6 +136,20 @@ fun MoodAndGenresScreen(
             bottom = bottomPadding,
         ),
     ) {
+        item(span = { GridItemSpan(maxLineSpan) }, key = "top_mixes") {
+            TopMixesForYouSection(
+                state = topMixesUiState,
+                onPlayMix = { mix ->
+                    playerConnection?.playQueue(
+                        ListQueue(
+                            items = mix.tracks.map { it.toMediaItem() },
+                        ),
+                    )
+                },
+                modifier = Modifier.padding(bottom = 12.dp)
+            )
+        }
+
         item(span = { GridItemSpan(maxLineSpan) }) {
             NavigationTitle(
                 title = stringResource(R.string.what_are_you_feeling_like),
@@ -154,6 +193,184 @@ fun MoodAndGenresScreen(
         }
     }
 }
+
+@Composable
+private fun TopMixesForYouSection(
+    state: LibraryTopMixesUiState,
+    onPlayMix: (LibraryTopMixUiModel) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    when (state) {
+        LibraryTopMixesUiState.Loading -> Unit
+        LibraryTopMixesUiState.Empty -> TopMixesMessageSection(
+            message = stringResource(R.string.build_your_mix_empty_library),
+            modifier = modifier,
+        )
+        is LibraryTopMixesUiState.Error -> TopMixesMessageSection(
+            message = state.message,
+            modifier = modifier,
+        )
+        is LibraryTopMixesUiState.Success -> {
+            if (state.mixes.isEmpty()) {
+                TopMixesMessageSection(
+                    message = stringResource(R.string.build_your_mix_empty_library),
+                    modifier = modifier,
+                )
+            } else {
+                Column(modifier = modifier.fillMaxWidth()) {
+                    Text(
+                        text = stringResource(R.string.top_mixes),
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                    LazyRow(
+                        contentPadding = PaddingValues(horizontal = 12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        items(
+                            items = state.mixes,
+                            key = { mix -> mix.id },
+                            contentType = { "library_top_mix" },
+                        ) { mix ->
+                            LibraryTopMixCard(
+                                mix = mix,
+                                onPlay = { onPlayMix(mix) },
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun TopMixesMessageSection(
+    message: String,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        Text(
+            text = stringResource(R.string.top_mixes),
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+        Text(
+            text = message,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(horizontal = 12.dp),
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+        )
+    }
+}
+
+@Composable
+private fun LibraryTopMixCard(
+    mix: LibraryTopMixUiModel,
+    onPlay: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.97f else 1.0f,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow),
+        label = "LibraryTopMixCardScale",
+    )
+
+    Box(
+        modifier = modifier
+            .width(180.dp)
+            .height(130.dp)
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
+            .clip(RoundedCornerShape(32.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f))
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onPlay,
+            )
+            .padding(16.dp),
+    ) {
+        Column(
+            modifier = Modifier.fillMaxHeight(),
+            verticalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Column {
+                Text(
+                    text = stringResource(mix.id.titleRes()),
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = stringResource(mix.id.descriptionRes()),
+                    style = MaterialTheme.typography.bodySmall,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Row(horizontalArrangement = Arrangement.spacedBy((-8).dp)) {
+                    mix.previewArtworkUrls.forEach { artworkUrl ->
+                        AsyncImage(
+                            model = artworkUrl,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(28.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.18f)),
+                        )
+                    }
+                }
+
+                IconButton(
+                    onClick = onPlay,
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                    ),
+                    modifier = Modifier.size(48.dp),
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.play),
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun LibraryTopMixId.titleRes(): Int =
+    when (this) {
+        LibraryTopMixId.DAILY -> R.string.daily_mix_1
+        LibraryTopMixId.CHILL -> R.string.chill_mix
+        LibraryTopMixId.FOCUS -> R.string.focus_mix
+    }
+
+private fun LibraryTopMixId.descriptionRes(): Int =
+    when (this) {
+        LibraryTopMixId.DAILY -> R.string.daily_mix_1_desc
+        LibraryTopMixId.CHILL -> R.string.chill_mix_desc
+        LibraryTopMixId.FOCUS -> R.string.focus_mix_desc
+    }
 
 @Composable
 fun MoodAndGenresButton(
