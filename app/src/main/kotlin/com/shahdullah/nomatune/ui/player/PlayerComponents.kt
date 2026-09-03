@@ -946,12 +946,11 @@ fun PlayerPlaybackControls(
                         onClick = { haptic.performHapticFeedback(HapticFeedbackType.LongPress); playerConnection.seekToPrevious() },
                         enabled = canSkipPrevious,
                         colors = IconButtonDefaults.filledTonalIconButtonColors(
-                            containerColor = textButtonColor,
-                            contentColor = iconButtonColor
+                            containerColor = Color.Transparent,
+                            contentColor = textButtonColor
                         ),
                         modifier = Modifier
                             .size(width = sideButtonWidth, height = sideButtonHeight)
-                            .clip(RoundedCornerShape(32.dp))
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.skip_previous),
@@ -1006,12 +1005,11 @@ fun PlayerPlaybackControls(
                         onClick = { haptic.performHapticFeedback(HapticFeedbackType.LongPress); playerConnection.seekToNext() },
                         enabled = canSkipNext,
                         colors = IconButtonDefaults.filledTonalIconButtonColors(
-                            containerColor = textButtonColor,
-                            contentColor = iconButtonColor
+                            containerColor = Color.Transparent,
+                            contentColor = textButtonColor
                         ),
                         modifier = Modifier
                             .size(width = sideButtonWidth, height = sideButtonHeight)
-                            .clip(RoundedCornerShape(32.dp))
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.skip_next),
@@ -1058,8 +1056,6 @@ fun PlayerPlaybackControls(
                     Box(
                         modifier = Modifier
                             .size(52.dp)
-                            .clip(RoundedCornerShape(14.dp))
-                            .background(textBackgroundColor.copy(alpha = 0.08f))
                             .clickable(enabled = canSkipPrevious) {
                                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                 playerConnection.seekToPrevious()
@@ -1114,8 +1110,6 @@ fun PlayerPlaybackControls(
                     Box(
                         modifier = Modifier
                             .size(52.dp)
-                            .clip(RoundedCornerShape(14.dp))
-                            .background(textBackgroundColor.copy(alpha = 0.08f))
                             .clickable(enabled = canSkipNext) {
                                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                 playerConnection.seekToNext()
@@ -1225,8 +1219,8 @@ fun PlayerPlaybackControls(
                         Surface(
                             onClick = { haptic.performHapticFeedback(HapticFeedbackType.LongPress); playerConnection.seekToPrevious() },
                             enabled = canSkipPrevious,
-                            shape = RoundedCornerShape(largeRadius),
-                            color = textBackgroundColor.copy(alpha = 0.15f),
+                            shape = CircleShape,
+                            color = Color.Transparent,
                             modifier = Modifier.size(large)
                         ) {
                             Box(
@@ -1294,8 +1288,8 @@ fun PlayerPlaybackControls(
                         Surface(
                             onClick = { haptic.performHapticFeedback(HapticFeedbackType.LongPress); playerConnection.seekToNext() },
                             enabled = canSkipNext,
-                            shape = RoundedCornerShape(largeRadius),
-                            color = textBackgroundColor.copy(alpha = 0.15f),
+                            shape = CircleShape,
+                            color = Color.Transparent,
                             modifier = Modifier.size(large)
                         ) {
                             Box(
@@ -1492,11 +1486,8 @@ fun PlayerPlaybackControls(
                         Surface(
                             onClick = { haptic.performHapticFeedback(HapticFeedbackType.LongPress); playerConnection.seekToPrevious() },
                             enabled = canSkipPrevious,
-                            shape = RoundedCornerShape(
-                                topStart = 22.dp, bottomStart = 22.dp,
-                                topEnd = 8.dp, bottomEnd = 8.dp
-                            ),
-                            color = MaterialTheme.colorScheme.secondaryContainer,
+                            shape = CircleShape,
+                            color = Color.Transparent,
                             modifier = Modifier
                                 .weight(1f)
                                 .height(56.dp)
@@ -1508,7 +1499,7 @@ fun PlayerPlaybackControls(
                                 Icon(
                                     painter = painterResource(R.drawable.skip_previous),
                                     contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSecondaryContainer.copy(
+                                    tint = textBackgroundColor.copy(
                                         alpha = if (canSkipPrevious) 1f else 0.4f
                                     ),
                                     modifier = Modifier.size(28.dp)
@@ -1564,11 +1555,8 @@ fun PlayerPlaybackControls(
                         Surface(
                             onClick = { haptic.performHapticFeedback(HapticFeedbackType.LongPress); playerConnection.seekToNext() },
                             enabled = canSkipNext,
-                            shape = RoundedCornerShape(
-                                topStart = 8.dp, bottomStart = 8.dp,
-                                topEnd = 22.dp, bottomEnd = 22.dp
-                            ),
-                            color = MaterialTheme.colorScheme.secondaryContainer,
+                            shape = CircleShape,
+                            color = Color.Transparent,
                             modifier = Modifier
                                 .weight(1f)
                                 .height(56.dp)
@@ -1580,7 +1568,7 @@ fun PlayerPlaybackControls(
                                 Icon(
                                     painter = painterResource(R.drawable.skip_next),
                                     contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSecondaryContainer.copy(
+                                    tint = textBackgroundColor.copy(
                                         alpha = if (canSkipNext) 1f else 0.4f
                                     ),
                                     modifier = Modifier.size(28.dp)
