@@ -181,16 +181,6 @@ fun AppearanceSettings(
             DisableAnimationsKey,
             defaultValue = defaultDisableAnimations,
         )
-    val (blurRadius, onBlurRadiusChange) = rememberPreference(BlurRadiusKey, defaultValue = 48f)
-    val (backdropEnabled, onBackdropEnabledChange) = rememberPreference(BackdropEnabledKey, defaultValue = true)
-    val (backdropBlurAmount, onBackdropBlurAmountChange) = rememberPreference(BackdropBlurAmountKey, defaultValue = 60)
-    val (fontPreference, onFontPreferenceChange) =
-        rememberEnumPreference(
-            FontPreferenceKey,
-            defaultValue = AppFontPreference.DEFAULT,
-        )
-    val (customFontUri, onCustomFontUriChange) = rememberPreference(CustomFontUriKey, defaultValue = "")
-    val (customFontName, onCustomFontNameChange) = rememberPreference(CustomFontNameKey, defaultValue = "")
     val (defaultOpenTab, onDefaultOpenTabChange) =
         rememberEnumPreference(
             DefaultOpenTabKey,
@@ -244,48 +234,7 @@ fun AppearanceSettings(
             defaultValue = QuickPicksDisplayMode.LIST,
         )
 
-    val customFontPickerLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-            if (uri == null) return@rememberLauncherForActivityResult
-            if (!CustomFontLoader.isSupportedTtf(context, uri)) {
-                Toast.makeText(context, context.getString(R.string.custom_font_invalid), Toast.LENGTH_SHORT).show()
-                return@rememberLauncherForActivityResult
-            }
 
-            runCatching {
-                context.contentResolver.takePersistableUriPermission(
-                    uri,
-                    Intent.FLAG_GRANT_READ_URI_PERMISSION,
-                )
-            }
-            if (customFontUri.isNotBlank() && customFontUri != uri.toString()) {
-                runCatching {
-                    context.contentResolver.releasePersistableUriPermission(
-                        Uri.parse(customFontUri),
-                        Intent.FLAG_GRANT_READ_URI_PERMISSION,
-                    )
-                }
-            }
-
-            onCustomFontUriChange(uri.toString())
-            onCustomFontNameChange(CustomFontLoader.displayName(context, uri))
-            onFontPreferenceChange(AppFontPreference.CUSTOM)
-        }
-    val pickCustomFont =
-        remember(customFontPickerLauncher) {
-            {
-                customFontPickerLauncher.launch(CustomFontLoader.supportedMimeTypes)
-            }
-        }
-    val onFontPreferenceSelected =
-        remember(customFontUri, onFontPreferenceChange, pickCustomFont) {
-            { value: AppFontPreference ->
-                onFontPreferenceChange(value)
-                if (value == AppFontPreference.CUSTOM && customFontUri.isBlank()) {
-                    pickCustomFont()
-                }
-            }
-        }
 
     val availableBackgroundStyles =
         PlayerBackgroundStyle.entries.filter {
@@ -456,90 +405,6 @@ fun AppearanceSettings(
                     icon = { Icon(painterResource(R.drawable.animation), null) },
                     checked = disableAnimations,
                     onCheckedChange = onDisableAnimationsChange,
-                )
-            }
-
-            item {
-                PreferenceEntry(
-                    title = { Text(stringResource(R.string.blur_intensity)) },
-                    description = stringResource(R.string.blur_intensity_value, blurRadius.roundToInt()),
-                    icon = { Icon(painterResource(R.drawable.blur_on), null) },
-                    isEnabled = !disableBlur,
-                    content = {
-                        Spacer(modifier = Modifier.height(10.dp))
-                        Slider(
-                            value = blurRadius,
-                            onValueChange = onBlurRadiusChange,
-                            valueRange = 0f..64f,
-                            steps = 63,
-                            enabled = !disableBlur,
-                            modifier = Modifier.fillMaxWidth(),
-                        )
-                    },
-                )
-            }
-
-            item {
-                SwitchPreference(
-                    title = { Text(stringResource(R.string.album_backdrop)) },
-                    description = stringResource(R.string.album_backdrop_desc),
-                    icon = { Icon(painterResource(R.drawable.blur_on), null) },
-                    checked = backdropEnabled,
-                    onCheckedChange = onBackdropEnabledChange,
-                )
-            }
-
-            item {
-                PreferenceEntry(
-                    title = { Text(stringResource(R.string.backdrop_blur_amount)) },
-                    description = stringResource(R.string.backdrop_blur_amount_value, backdropBlurAmount),
-                    icon = { Icon(painterResource(R.drawable.blur_on), null) },
-                    isEnabled = backdropEnabled,
-                    content = {
-                        Spacer(modifier = Modifier.height(10.dp))
-                        Slider(
-                            value = backdropBlurAmount.toFloat(),
-                            onValueChange = { onBackdropBlurAmountChange(it.roundToInt()) },
-                            valueRange = 0f..100f,
-                            steps = 19,
-                            enabled = backdropEnabled,
-                            modifier = Modifier.fillMaxWidth(),
-                        )
-                    },
-                )
-            }
-
-            item {
-                EnumListPreference(
-                    title = { Text(stringResource(R.string.font_preference)) },
-                    description = stringResource(R.string.font_preference_desc),
-                    icon = { Icon(painterResource(R.drawable.text_fields), null) },
-                    selectedValue = fontPreference,
-                    onValueSelected = onFontPreferenceSelected,
-                    valueText = {
-                        when (it) {
-                            AppFontPreference.DEFAULT -> stringResource(R.string.font_preference_default)
-                            AppFontPreference.SYSTEM -> stringResource(R.string.font_preference_system)
-                            AppFontPreference.CUSTOM -> stringResource(R.string.font_preference_custom)
-                        }
-                    },
-                )
-            }
-
-            item(visible = fontPreference == AppFontPreference.CUSTOM) {
-                val customFontDescription =
-                    if (customFontName.isNotBlank()) {
-                        customFontName
-                    } else if (customFontUri.isBlank()) {
-                        stringResource(R.string.custom_font_desc)
-                    } else {
-                        customFontUri
-                    }
-                PreferenceEntry(
-                    title = { Text(stringResource(R.string.custom_font)) },
-                    description = customFontDescription,
-                    icon = { Icon(painterResource(R.drawable.text_fields), null) },
-                    onClick = pickCustomFont,
                 )
             }
         }
