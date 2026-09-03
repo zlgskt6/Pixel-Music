@@ -38,15 +38,13 @@ jobs:
       - name: Grant execute permission
         run: chmod +x gradlew
 
-      # Build GMS / Mobile / Universal debug APK for CI verification
       - name: Build debug APK
-        run: ./gradlew assembleGmsMobileUniversalDebug --stacktrace --no-daemon --no-configuration-cache
-        continue-on-error: true
+        run: ./gradlew assembleDebug --stacktrace --no-daemon --no-configuration-cache
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
           name: Pixel-Music-debug
-          path: app/build/outputs/apk/gmsMobileUniversal/debug/*.apk
+          path: app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
           retention-days: 14

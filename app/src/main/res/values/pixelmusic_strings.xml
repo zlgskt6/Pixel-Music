@@ -533,4 +533,8 @@
     <string name="import_csv">Import \'csv\' playlist</string>
     <string name="playlist_not_found">Playlist not found</string>
     <string name="playlist_not_found_desc">The requested playlist could not be loaded</string>
+    <plurals name="news_article_count">
+        <item quantity="one">%d article</item>
+        <item quantity="other">%d articles</item>
+    </plurals>
 </resources>
