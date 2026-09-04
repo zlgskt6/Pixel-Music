@@ -55,12 +55,22 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import com.shahdullah.nomatune.constants.AccountNameKey
+import com.shahdullah.nomatune.constants.InnerTubeCookieKey
+import com.shahdullah.nomatune.innertube.YouTube
+import com.shahdullah.nomatune.innertube.models.AccountInfo
+import com.shahdullah.nomatune.innertube.utils.hasYouTubeLoginCookie
+import com.shahdullah.nomatune.utils.rememberPreference
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -146,6 +156,94 @@ fun LibraryMixScreen(
             contentPadding = PaddingValues(bottom = playerAwareBottomPadding),
             modifier = Modifier.fillMaxSize()
         ) {
+            // Big User Profile Card
+            item(key = "user_profile_card") {
+                val accountName by rememberPreference(AccountNameKey, "")
+                val innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
+                val isLoggedIn = remember(innerTubeCookie) { hasYouTubeLoginCookie(innerTubeCookie) }
+
+                val accountInfo by produceState<AccountInfo?>(initialValue = null, key1 = innerTubeCookie) {
+                    if (isLoggedIn) {
+                        value = withContext(Dispatchers.IO) { YouTube.accountInfo().getOrNull() }
+                    }
+                }
+
+                val events by database.events().collectAsState(initial = emptyList())
+                val totalListenedCount = events.size
+
+                val displayName = accountInfo?.name?.ifBlank { null }
+                    ?: accountName.ifBlank { null }
+                    ?: stringResource(R.string.account)
+
+                Surface(
+                    onClick = { navController.navigate("settings/account") },
+                    shape = RoundedCornerShape(32.dp),
+                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(20.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        // Profile Picture
+                        Box(
+                            modifier = Modifier
+                                .size(64.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.primaryContainer),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (!accountInfo?.thumbnailUrl.isNullOrBlank()) {
+                                AsyncImage(
+                                    model = accountInfo?.thumbnailUrl,
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            } else {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.account),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    modifier = Modifier.size(32.dp)
+                                )
+                            }
+                        }
+
+                        // User Info & Total Songs Listened Count
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = displayName,
+                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                                color = MaterialTheme.colorScheme.onSurface,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.graphic_eq),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                                Text(
+                                    text = "$totalListenedCount ${stringResource(R.string.tracks_label)} ${stringResource(R.string.listened_label)}",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
             // Shortcuts Grid
             item(key = "shortcuts_grid") {
                 Column(
