@@ -729,6 +729,8 @@
     <string name="update_text">Update</string>
     <string name="translate">Translate</string>
     <string name="listened_label">listened</string>
+    <string name="advanced">Advanced Settings</string>
+    <string name="storage_advanced_settings_desc">Song &amp; image cache settings</string>
     <string name="language_label">Language</string>
     <string name="lyrics">Lyrics</string>
     <string name="translation_success">Translation saved</string>

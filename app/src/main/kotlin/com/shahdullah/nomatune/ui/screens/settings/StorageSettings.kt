@@ -127,11 +127,11 @@ fun StorageSettings(
             snackbarHostState.currentSnackbarData?.dismiss()
             if (effect.restartApp) {
                 snackbarHostState.showSnackbar(
-                    message = context.getString(effect.messageResId),
+                    message = context.resources.getString(effect.messageResId),
                     duration = SnackbarDuration.Indefinite,
                 )
             } else {
-                snackbarHostState.showSnackbar(context.getString(effect.messageResId))
+                snackbarHostState.showSnackbar(context.resources.getString(effect.messageResId))
             }
         }
     }
@@ -177,6 +177,7 @@ fun StorageSettings(
             key = MaxCanvasCacheSizeKey,
             defaultValue = 256,
         )
+    var showAdvancedSettings by remember { mutableStateOf(false) }
     var clearCacheDialog by remember { mutableStateOf(false) }
     var clearDownloads by remember { mutableStateOf(false) }
     var clearImageCacheDialog by remember { mutableStateOf(false) }
@@ -303,9 +304,6 @@ fun StorageSettings(
 
             StorageFolderSection(
                 state = screenState,
-                smartTrimmer = smartTrimmer,
-                isSmartTrimmerAvailable = isSmartTrimmerAvailable,
-                onSmartTrimmerChange = onSmartTrimmerChange,
                 onSelectFolder = viewModel::openStorageLocationPicker,
             )
 
@@ -340,112 +338,120 @@ fun StorageSettings(
                 )
             }
 
-            PreferenceGroup(title = stringResource(R.string.song_cache)) {
+            PreferenceGroup(title = stringResource(R.string.advanced)) {
                 item {
-                    ListPreference(
-                        title = { Text(stringResource(R.string.max_song_cache_size)) },
-                        description =
-                            if (maxSongCacheSize == -1) {
-                                stringResource(R.string.size_used, formatFileSize(playerCacheSize))
-                            } else {
-                                stringResource(
-                                    R.string.storage_size_ratio,
-                                    formatFileSize(playerCacheSize),
-                                    formatFileSize(maxSongCacheSizeBytes),
-                                )
-                            },
+                    PreferenceEntry(
+                        title = { Text(stringResource(R.string.advanced)) },
+                        description = stringResource(R.string.storage_advanced_settings_desc),
                         icon = {
                             Icon(
-                                painter = painterResource(R.drawable.ic_music),
+                                painter = painterResource(R.drawable.settings),
                                 contentDescription = null,
                             )
                         },
-                        selectedValue = maxSongCacheSize,
-                        values = cacheSizeValuesWithUnlimited,
-                        valueText = {
-                            when (it) {
-                                0 -> stringResource(R.string.disable)
-                                -1 -> stringResource(R.string.unlimited)
-                                else -> formatFileSize(cacheSizeMegabytesToBytes(it))
-                            }
+                        trailingContent = {
+                            Icon(
+                                painter = painterResource(
+                                    if (showAdvancedSettings) R.drawable.expand_less else R.drawable.expand_more
+                                ),
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp),
+                            )
                         },
-                        onValueSelected = onMaxSongCacheSizeChange,
+                        onClick = { showAdvancedSettings = !showAdvancedSettings },
                     )
                 }
-                item(visible = maxSongCacheSize > 0) {
-                    CacheUsagePreference(progress = playerCacheProgress)
-                }
-                item {
-                    PreferenceEntry(
-                        title = { Text(stringResource(R.string.clear_song_cache)) },
-                        onClick = { clearCacheDialog = true },
-                    )
-                }
-            }
 
-            if (clearCacheDialog) {
-                ActionPromptDialog(
-                    title = stringResource(R.string.clear_song_cache),
-                    onDismiss = { clearCacheDialog = false },
-                    onConfirm = {
-                        viewModel.clearSongCache()
-                        clearCacheDialog = false
-                    },
-                    onCancel = { clearCacheDialog = false },
-                    content = {
-                        Text(text = stringResource(R.string.clear_song_cache_dialog))
-                    },
-                )
-            }
-
-            PreferenceGroup(title = stringResource(R.string.image_cache)) {
-                item {
-                    ListPreference(
-                        title = { Text(stringResource(R.string.max_image_cache_size)) },
-                        description =
-                            when {
-                                maxImageCacheSize < 0 -> {
-                                    stringResource(R.string.size_used, formatFileSize(imageCacheSize))
-                                }
-
-                                maxImageCacheSize > 0 -> {
+                if (showAdvancedSettings) {
+                    item {
+                        ListPreference(
+                            title = { Text(stringResource(R.string.max_song_cache_size)) },
+                            description =
+                                if (maxSongCacheSize == -1) {
+                                    stringResource(R.string.size_used, formatFileSize(playerCacheSize))
+                                } else {
                                     stringResource(
                                         R.string.storage_size_ratio,
-                                        formatFileSize(imageCacheSize),
-                                        formatFileSize(maxImageCacheSizeBytes),
+                                        formatFileSize(playerCacheSize),
+                                        formatFileSize(maxSongCacheSizeBytes),
                                     )
-                                }
-
-                                else -> {
-                                    stringResource(R.string.disable)
+                                },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_music),
+                                    contentDescription = null,
+                                )
+                            },
+                            selectedValue = maxSongCacheSize,
+                            values = cacheSizeValuesWithUnlimited,
+                            valueText = {
+                                when (it) {
+                                    0 -> stringResource(R.string.disable)
+                                    -1 -> stringResource(R.string.unlimited)
+                                    else -> formatFileSize(cacheSizeMegabytesToBytes(it))
                                 }
                             },
-                        icon = {
-                            Icon(
-                                painter = painterResource(R.drawable.image),
-                                contentDescription = null,
-                            )
-                        },
-                        selectedValue = maxImageCacheSize,
-                        values = cacheSizeValuesWithUnlimited,
-                        valueText = {
-                            when (it) {
-                                0 -> stringResource(R.string.disable)
-                                -1 -> stringResource(R.string.unlimited)
-                                else -> formatFileSize(cacheSizeMegabytesToBytes(it))
-                            }
-                        },
-                        onValueSelected = onMaxImageCacheSizeChange,
-                    )
-                }
-                item(visible = maxImageCacheSize > 0) {
-                    CacheUsagePreference(progress = imageCacheProgress)
-                }
-                item {
-                    PreferenceEntry(
-                        title = { Text(stringResource(R.string.clear_image_cache)) },
-                        onClick = { clearImageCacheDialog = true },
-                    )
+                            onValueSelected = onMaxSongCacheSizeChange,
+                        )
+                    }
+                    item(visible = maxSongCacheSize > 0) {
+                        CacheUsagePreference(progress = playerCacheProgress)
+                    }
+                    item {
+                        PreferenceEntry(
+                            title = { Text(stringResource(R.string.clear_song_cache)) },
+                            onClick = { clearCacheDialog = true },
+                        )
+                    }
+
+                    item {
+                        ListPreference(
+                            title = { Text(stringResource(R.string.max_image_cache_size)) },
+                            description =
+                                when {
+                                    maxImageCacheSize < 0 -> {
+                                        stringResource(R.string.size_used, formatFileSize(imageCacheSize))
+                                    }
+
+                                    maxImageCacheSize > 0 -> {
+                                        stringResource(
+                                            R.string.storage_size_ratio,
+                                            formatFileSize(imageCacheSize),
+                                            formatFileSize(maxImageCacheSizeBytes),
+                                        )
+                                    }
+
+                                    else -> {
+                                        stringResource(R.string.disable)
+                                    }
+                                },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.image),
+                                    contentDescription = null,
+                                )
+                            },
+                            selectedValue = maxImageCacheSize,
+                            values = cacheSizeValuesWithUnlimited,
+                            valueText = {
+                                when (it) {
+                                    0 -> stringResource(R.string.disable)
+                                    -1 -> stringResource(R.string.unlimited)
+                                    else -> formatFileSize(cacheSizeMegabytesToBytes(it))
+                                }
+                            },
+                            onValueSelected = onMaxImageCacheSizeChange,
+                        )
+                    }
+                    item(visible = maxImageCacheSize > 0) {
+                        CacheUsagePreference(progress = imageCacheProgress)
+                    }
+                    item {
+                        PreferenceEntry(
+                            title = { Text(stringResource(R.string.clear_image_cache)) },
+                            onClick = { clearImageCacheDialog = true },
+                        )
+                    }
                 }
             }
 
@@ -579,9 +585,6 @@ fun StorageSettings(
 @Composable
 private fun StorageFolderSection(
     state: StorageSettingsScreenState,
-    smartTrimmer: Boolean,
-    isSmartTrimmerAvailable: Boolean,
-    onSmartTrimmerChange: (Boolean) -> Unit,
     onSelectFolder: () -> Unit,
 ) {
     PreferenceGroup(title = stringResource(R.string.storage_folder)) {
@@ -630,16 +633,6 @@ private fun StorageFolderSection(
                     )
                 }
             }
-        }
-
-        item {
-            SwitchPreference(
-                title = { Text(stringResource(R.string.smart_trimmer)) },
-                description = stringResource(R.string.smart_trimmer_description),
-                checked = smartTrimmer && isSmartTrimmerAvailable,
-                onCheckedChange = onSmartTrimmerChange,
-                isEnabled = isSmartTrimmerAvailable,
-            )
         }
     }
 }
