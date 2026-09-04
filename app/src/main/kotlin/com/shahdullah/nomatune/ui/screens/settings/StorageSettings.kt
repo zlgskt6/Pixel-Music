@@ -152,10 +152,6 @@ fun StorageSettings(
         remember {
             cacheSizeValues + (-1)
         }
-    val canvasCacheSizeValues =
-        remember {
-            listOf(0, 64, 128, 256, 512, 1024, 2048, 4096, 8192, -1)
-        }
 
     val (smartTrimmer, onSmartTrimmerChange) =
         rememberPreference(
@@ -181,7 +177,6 @@ fun StorageSettings(
     var clearCacheDialog by remember { mutableStateOf(false) }
     var clearDownloads by remember { mutableStateOf(false) }
     var clearImageCacheDialog by remember { mutableStateOf(false) }
-    var clearCanvasCacheDialog by remember { mutableStateOf(false) }
     var imageCacheSize by remember { mutableStateOf(tryOrNull { imageDiskCache.size } ?: 0L) }
     var playerCacheSize by remember { mutableStateOf(0L) }
     var downloadCacheSize by remember { mutableStateOf(0L) }
@@ -470,71 +465,7 @@ fun StorageSettings(
                 )
             }
 
-            PreferenceGroup(title = stringResource(R.string.canvas_cache)) {
-                item {
-                    ListPreference(
-                        title = { Text(stringResource(R.string.max_cache_size)) },
-                        description =
-                            when {
-                                maxCanvasCacheSize < 0 -> {
-                                    stringResource(R.string.size_used, formatFileSize(canvasCacheBytes))
-                                }
 
-                                maxCanvasCacheSize > 0 -> {
-                                    stringResource(
-                                        R.string.storage_size_ratio,
-                                        formatFileSize(canvasCacheBytes),
-                                        formatFileSize(cacheSizeMegabytesToBytes(maxCanvasCacheSize)),
-                                    )
-                                }
-
-                                else -> {
-                                    stringResource(R.string.disable)
-                                }
-                            },
-                        icon = {
-                            Icon(
-                                painter = painterResource(R.drawable.motion_photos_on),
-                                contentDescription = null,
-                            )
-                        },
-                        selectedValue = maxCanvasCacheSize,
-                        values = canvasCacheSizeValues,
-                        valueText = {
-                            when (it) {
-                                0 -> stringResource(R.string.disable)
-                                -1 -> stringResource(R.string.unlimited)
-                                else -> formatFileSize(cacheSizeMegabytesToBytes(it))
-                            }
-                        },
-                        onValueSelected = onMaxCanvasCacheSizeChange,
-                    )
-                }
-                item(visible = maxCanvasCacheSize > 0) {
-                    CacheUsagePreference(progress = canvasCacheProgress)
-                }
-                item {
-                    PreferenceEntry(
-                        title = { Text(stringResource(R.string.clear_canvas_cache)) },
-                        onClick = { clearCanvasCacheDialog = true },
-                    )
-                }
-            }
-
-            if (clearCanvasCacheDialog) {
-                ActionPromptDialog(
-                    title = stringResource(R.string.clear_canvas_cache),
-                    onDismiss = { clearCanvasCacheDialog = false },
-                    onConfirm = {
-                        viewModel.clearCanvasCache()
-                        clearCanvasCacheDialog = false
-                    },
-                    onCancel = { clearCanvasCacheDialog = false },
-                    content = {
-                        Text(text = stringResource(R.string.clear_canvas_cache_dialog))
-                    },
-                )
-            }
         }
 
         TopAppBar(

@@ -80,7 +80,7 @@ fun BottomSheetMenu(
 ) {
     val focusManager = LocalFocusManager.current
     val coroutineScope = rememberCoroutineScope()
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
 
     val handleDismiss: () -> Unit = {
         coroutineScope.launch {
@@ -113,6 +113,7 @@ fun BottomSheetMenu(
                 state.isVisible = false
             },
             sheetState = sheetState,
+            scrimColor = Color.Transparent,
             containerColor = background,
             contentColor = MaterialTheme.colorScheme.onSurface,
             dragHandle = {
@@ -124,7 +125,7 @@ fun BottomSheetMenu(
                         .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
                 )
             },
-            modifier = modifier.fillMaxHeight()
+            modifier = modifier,
         ) {
             Column(
                 modifier = Modifier

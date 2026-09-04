@@ -175,6 +175,15 @@ fun SettingsScreen(
                 bottom = 32.dp,
             ),
         ) {
+            item(key = "profile_header", contentType = "settings_profile") {
+                SettingsProfileHeader(
+                    navController = navController,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 12.dp),
+                )
+            }
+
             if (hasUpdate && !isUpdateDismissed) {
                 item(key = "update", contentType = "settings_banner") {
                     SettingsUpdateBanner(

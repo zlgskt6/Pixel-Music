@@ -190,6 +190,9 @@ import com.shahdullah.nomatune.constants.BackdropEnabledKey
 import com.shahdullah.nomatune.constants.BlurRadiusKey
 import com.shahdullah.nomatune.constants.DarkModeKey
 import com.shahdullah.nomatune.constants.DisableBlurKey
+import com.shahdullah.nomatune.constants.DisableMarqueeKey
+import com.shahdullah.nomatune.extensions.smartMarquee
+import com.shahdullah.nomatune.utils.isMidRangeDevice
 import com.shahdullah.nomatune.constants.EnableHapticFeedbackKey
 import com.shahdullah.nomatune.constants.MaxCanvasCacheSizeKey
 import com.shahdullah.nomatune.constants.PlayerBackgroundStyle
@@ -350,9 +353,11 @@ fun BottomSheetPlayer(
         defaultValue = PlayerDesignStyle.V3,
     )
 
+    val isMidRangeDevice = remember(context) { context.isMidRangeDevice() }
+
     val storedPlayerBackground by rememberEnumPreference(
         key = PlayerBackgroundStyleKey,
-        defaultValue = PlayerBackgroundStyle.GLOW_ANIMATED,
+        defaultValue = if (isMidRangeDevice) PlayerBackgroundStyle.GLOW else PlayerBackgroundStyle.GLOW_ANIMATED,
     )
     val playerUsesFixedBackground =
         playerDesignStyle == PlayerDesignStyle.V8 || playerDesignStyle == PlayerDesignStyle.V9
@@ -365,7 +370,8 @@ fun BottomSheetPlayer(
     val (playerCustomContrast) = rememberPreference(PlayerCustomContrastKey, 1f)
     val (playerCustomBrightness) = rememberPreference(PlayerCustomBrightnessKey, 1f)
 
-    val (disableBlur) = rememberPreference(DisableBlurKey, false)
+    val (disableBlur) = rememberPreference(DisableBlurKey, isMidRangeDevice)
+    val (disableMarquee) = rememberPreference(DisableMarqueeKey, isMidRangeDevice)
     val (blurRadius) = rememberPreference(BlurRadiusKey, 48f)
     val (backdropEnabled) = rememberPreference(BackdropEnabledKey, defaultValue = true)
     val (backdropBlurAmount) = rememberPreference(BackdropBlurAmountKey, defaultValue = 60)
@@ -2422,6 +2428,10 @@ private fun LittlePlayerContent(
                 mediaMetadata.artists.joinToString(separator = ", ") { artist -> artist.name }
             }
 
+        val context = LocalContext.current
+        val isMidRange = remember(context) { context.isMidRangeDevice() }
+        val (disableMarquee) = rememberPreference(DisableMarqueeKey, isMidRange)
+
         Column(
             modifier =
                 Modifier
@@ -2448,7 +2458,7 @@ private fun LittlePlayerContent(
                             fontWeight = FontWeight.Bold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.basicMarquee(),
+                            modifier = Modifier.smartMarquee(!disableMarquee),
                         )
                     }
 
@@ -2466,7 +2476,7 @@ private fun LittlePlayerContent(
                                 style = MaterialTheme.typography.bodyMedium,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.basicMarquee(),
+                                modifier = Modifier.smartMarquee(!disableMarquee),
                             )
                         }
                     }
@@ -2483,7 +2493,7 @@ private fun LittlePlayerContent(
                                 style = MaterialTheme.typography.bodyMedium,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.basicMarquee(),
+                                modifier = Modifier.smartMarquee(!disableMarquee),
                             )
                         }
                     }

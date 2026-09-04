@@ -37,6 +37,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
+import com.shahdullah.nomatune.constants.DisableMarqueeKey
+import com.shahdullah.nomatune.extensions.smartMarquee
+import com.shahdullah.nomatune.utils.isMidRangeDevice
+import com.shahdullah.nomatune.utils.rememberPreference
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -151,6 +155,9 @@ fun PlayerTitleSection(
     clipboardManager: ClipboardManager,
     context: Context
 ) {
+    val isMidRange = remember(context) { context.isMidRangeDevice() }
+    val (disableMarquee) = rememberPreference(DisableMarqueeKey, isMidRange)
+
     AnimatedContent(
         targetState = mediaMetadata.title,
         transitionSpec = { fadeIn() togetherWith fadeOut() },
@@ -165,7 +172,7 @@ fun PlayerTitleSection(
             color = textBackgroundColor,
             modifier =
             Modifier
-                .basicMarquee()
+                .smartMarquee(!disableMarquee)
                 .combinedClickable(
                     enabled = true,
                     indication = null,
@@ -202,7 +209,7 @@ fun PlayerTitleSection(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .basicMarquee()
+            .smartMarquee(!disableMarquee)
             .padding(end = 12.dp)
     ) {
         var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }

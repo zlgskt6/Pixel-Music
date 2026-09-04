@@ -127,11 +127,13 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -1474,6 +1476,10 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                             
+                            val playerProgress = playerBottomSheetState.progress.coerceIn(0f, 1f)
+                            val bgScale = 1f - (playerProgress * 0.05f)
+                            val bgBlurDp = (playerProgress * 12f).dp
+
                             Scaffold(
                                 topBar = {
                                     if (shouldShowTopBar) {
@@ -1514,6 +1520,12 @@ class MainActivity : ComponentActivity() {
                                                         y = if (isFrozenRoute) 0 else currentScrollBehavior.state.heightOffset.toInt()
                                                     )
                                                 }
+                                                .graphicsLayer {
+                                                    scaleX = bgScale
+                                                    scaleY = bgScale
+                                                    transformOrigin = TransformOrigin(0.5f, 0.5f)
+                                                }
+                                                .blur(bgBlurDp)
                                         ) {
                                             // Gradient shadow background
                                             if (shouldShowBlurBackground) {
@@ -1593,7 +1605,7 @@ class MainActivity : ComponentActivity() {
                                                         }
 
                                                         IconButton(
-                                                            onClick = { navController.navigate("account") },
+                                                            onClick = { navController.navigate("settings") },
                                                             modifier = Modifier.padding(end = 4.dp)
                                                         ) {
                                                             if (isLoggedIn && !youtubeProfileUrl.isNullOrBlank()) {
@@ -1848,7 +1860,13 @@ class MainActivity : ComponentActivity() {
                                                 y = (slideOffset + hideOffset).roundToPx(),
                                             )
                                         }
-                                    },
+                                    }
+                                    .graphicsLayer {
+                                        scaleX = bgScale
+                                        scaleY = bgScale
+                                        transformOrigin = TransformOrigin(0.5f, 0.5f)
+                                    }
+                                    .blur(bgBlurDp),
                         ) {
                                             FloatingNavigationToolbar(
                                                 items = navigationItems,
@@ -2046,6 +2064,12 @@ class MainActivity : ComponentActivity() {
                                         }
                                     },
                                     modifier = Modifier
+                                        .graphicsLayer {
+                                            scaleX = bgScale
+                                            scaleY = bgScale
+                                            transformOrigin = TransformOrigin(0.5f, 0.5f)
+                                        }
+                                        .blur(bgBlurDp)
                                         .then(
                                             if (isTvDevice) Modifier
                                                 .focusRequester(contentAreaFocusRequester)

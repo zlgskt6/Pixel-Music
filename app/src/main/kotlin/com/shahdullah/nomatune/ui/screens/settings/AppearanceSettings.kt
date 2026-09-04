@@ -78,6 +78,8 @@ import com.shahdullah.nomatune.constants.DarkModeKey
 import com.shahdullah.nomatune.constants.DefaultOpenTabKey
 import com.shahdullah.nomatune.constants.DisableAnimationsKey
 import com.shahdullah.nomatune.constants.DisableBlurKey
+import com.shahdullah.nomatune.constants.DisableMarqueeKey
+import com.shahdullah.nomatune.utils.isMidRangeDevice
 import com.shahdullah.nomatune.constants.DynamicThemeKey
 import com.shahdullah.nomatune.constants.FontPreferenceKey
 import com.shahdullah.nomatune.constants.GridItemsSizeKey
@@ -164,10 +166,12 @@ fun AppearanceSettings(
             CropThumbnailToSquareKey,
             defaultValue = false,
         )
+    val isMidRange = remember(context) { context.isMidRangeDevice() }
+
     val (playerBackground, onPlayerBackgroundChange) =
         rememberEnumPreference(
             PlayerBackgroundStyleKey,
-            defaultValue = PlayerBackgroundStyle.GLOW_ANIMATED,
+            defaultValue = if (isMidRange) PlayerBackgroundStyle.GLOW else PlayerBackgroundStyle.GLOW_ANIMATED,
         )
     val (miniPlayerBackground, onMiniPlayerBackgroundChange) =
         rememberEnumPreference(
@@ -175,7 +179,8 @@ fun AppearanceSettings(
             defaultValue = MiniPlayerBackgroundStyle.THEME,
         )
     val (pureBlack, onPureBlackChange) = rememberPreference(PureBlackKey, defaultValue = false)
-    val (disableBlur, onDisableBlurChange) = rememberPreference(DisableBlurKey, defaultValue = false)
+    val (disableBlur, onDisableBlurChange) = rememberPreference(DisableBlurKey, defaultValue = isMidRange)
+    val (disableMarquee, onDisableMarqueeChange) = rememberPreference(DisableMarqueeKey, defaultValue = isMidRange)
     val (disableAnimations, onDisableAnimationsChange) =
         rememberPreference(
             DisableAnimationsKey,
@@ -395,6 +400,16 @@ fun AppearanceSettings(
                     icon = { Icon(painterResource(R.drawable.blur_off), null) },
                     checked = disableBlur,
                     onCheckedChange = onDisableBlurChange,
+                )
+            }
+
+            item {
+                SwitchPreference(
+                    title = { Text(stringResource(R.string.disable_marquee)) },
+                    description = stringResource(R.string.disable_marquee_desc),
+                    icon = { Icon(painterResource(R.drawable.text_fields), null) },
+                    checked = disableMarquee,
+                    onCheckedChange = onDisableMarqueeChange,
                 )
             }
 

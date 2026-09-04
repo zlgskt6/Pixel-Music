@@ -731,6 +731,8 @@
     <string name="listened_label">listened</string>
     <string name="advanced">Advanced Settings</string>
     <string name="storage_advanced_settings_desc">Song &amp; image cache settings</string>
+    <string name="disable_marquee">Disable scrolling text</string>
+    <string name="disable_marquee_desc">Stop automatic scrolling on long song titles</string>
     <string name="language_label">Language</string>
     <string name="lyrics">Lyrics</string>
     <string name="translation_success">Translation saved</string>

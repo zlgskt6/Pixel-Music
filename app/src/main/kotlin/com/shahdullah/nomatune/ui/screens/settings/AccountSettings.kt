@@ -478,6 +478,7 @@ private fun ProfileIdentityCard(
     onSwitchAccount: (SavedAccount) -> Unit,
     onSwitchAccountChannel: (AccountChannelUiModel) -> Unit,
     onRemoveAccount: (SavedAccount) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -494,7 +495,7 @@ private fun ProfileIdentityCard(
     )
 
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .graphicsLayer { scaleX = scale; scaleY = scale },
         shape = CardShape,
@@ -1269,5 +1270,140 @@ private fun previewSecureValue(value: String): String {
         return normalized
     }
     return normalized.take(52) + "\u2025" + normalized.takeLast(18)
+}
+
+@Composable
+fun SettingsProfileHeader(
+    navController: NavController,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val accountLabel = stringResource(R.string.account)
+    val loginLabel = stringResource(R.string.login)
+
+    val (accountNamePref, onAccountNameChange) = rememberPreference(AccountNameKey, "")
+    val (accountEmail, onAccountEmailChange) = rememberPreference(AccountEmailKey, "")
+    val (accountChannelHandle, onAccountChannelHandleChange) = rememberPreference(AccountChannelHandleKey, "")
+    val (innerTubeCookie, onInnerTubeCookieChange) = rememberPreference(InnerTubeCookieKey, "")
+    val (visitorData, onVisitorDataChange) = rememberPreference(VisitorDataKey, "")
+    val (dataSyncId, onDataSyncIdChange) = rememberPreference(DataSyncIdKey, "")
+    val (forceSyncOnAccountSwitch, _) = rememberPreference(ForceSyncOnAccountSwitchKey, false)
+    val (selectedYtmPlaylists, _) = rememberPreference(SelectedYtmPlaylistsKey, "")
+    val (savedAccountsJson, onSavedAccountsJsonChange) = rememberPreference(SavedAccountsKey, "")
+    val savedAccounts = remember(savedAccountsJson) {
+        SavedAccountCollection(decodeSavedAccounts(savedAccountsJson))
+    }
+
+    val onLegacyPoTokenChange: (String) -> Unit = { value ->
+        PreferenceStore.launchEdit(context.dataStore) {
+            putLegacyPoToken(value)
+        }
+    }
+
+    val isLoggedIn = remember(innerTubeCookie) {
+        hasYouTubeLoginCookie(innerTubeCookie)
+    }
+
+    val viewModel: HomeViewModel = hiltViewModel()
+    val accountNameFromViewModel by viewModel.accountName.collectAsStateWithLifecycle()
+    val accountImageUrl by viewModel.accountImageUrl.collectAsStateWithLifecycle()
+    val accountChannelsState by viewModel.accountChannelsState.collectAsStateWithLifecycle()
+
+    val displayName = when {
+        accountNameFromViewModel.isNotBlank() -> accountNameFromViewModel
+        accountNamePref.isNotBlank() -> accountNamePref
+        isLoggedIn -> accountLabel
+        else -> loginLabel
+    }
+
+    var showTokenEditor by remember { mutableStateOf(false) }
+
+    val saveCurrentAccount: () -> Unit = {
+        val existing = decodeSavedAccounts(savedAccountsJson)
+        if (isLoggedIn && existing.none { it.innerTubeCookie == innerTubeCookie }) {
+            val newAccount = SavedAccount(
+                id = UUID.randomUUID().toString(),
+                name = if (accountNameFromViewModel.isNotBlank()) accountNameFromViewModel else accountNamePref,
+                email = accountEmail,
+                channelHandle = accountChannelHandle,
+                innerTubeCookie = innerTubeCookie,
+                visitorData = visitorData,
+                dataSyncId = dataSyncId,
+                ytmSync = true,
+                selectedYtmPlaylists = selectedYtmPlaylists,
+            )
+            onSavedAccountsJsonChange(encodeSavedAccounts(existing + newAccount))
+        }
+    }
+
+    val switchToAccount: (SavedAccount) -> Unit = { account ->
+        viewModel.switchToAccount(
+            account = account,
+            forceSyncOnSwitch = forceSyncOnAccountSwitch,
+        )
+    }
+
+    val switchToAccountChannel: (AccountChannelUiModel) -> Unit = { channel ->
+        viewModel.switchToAccountChannel(
+            channel = channel,
+            forceSyncOnSwitch = forceSyncOnAccountSwitch,
+        )
+    }
+
+    val removeAccount: (SavedAccount) -> Unit = { account ->
+        val existing = decodeSavedAccounts(savedAccountsJson)
+        onSavedAccountsJsonChange(encodeSavedAccounts(existing.filter { it.id != account.id }))
+    }
+
+    ProfileIdentityCard(
+        isLoggedIn = isLoggedIn,
+        accountName = displayName,
+        accountEmail = accountEmail,
+        accountHandle = accountChannelHandle,
+        accountImageUrl = accountImageUrl,
+        savedAccounts = savedAccounts,
+        activeInnerTubeCookie = innerTubeCookie,
+        activeDataSyncId = dataSyncId,
+        accountChannelsState = accountChannelsState,
+        onPrimaryAction = {
+            if (isLoggedIn) {
+                navController.navigate("account")
+            } else {
+                navController.navigate(buildLoginRoute())
+            }
+        },
+        onSecondaryAction = {
+            if (isLoggedIn) {
+                onInnerTubeCookieChange("")
+                forgetAccount(context, clearWebAuthSession = true)
+            } else {
+                showTokenEditor = true
+            }
+        },
+        onSaveAccount = saveCurrentAccount,
+        onSwitchAccount = switchToAccount,
+        onSwitchAccountChannel = switchToAccountChannel,
+        onRemoveAccount = removeAccount,
+        modifier = modifier,
+    )
+
+    if (showTokenEditor) {
+        TokenEditorDialog(
+            innerTubeCookie = innerTubeCookie,
+            visitorData = visitorData,
+            dataSyncId = dataSyncId,
+            accountNamePref = accountNamePref,
+            accountEmail = accountEmail,
+            accountChannelHandle = accountChannelHandle,
+            onInnerTubeCookieChange = onInnerTubeCookieChange,
+            onPoTokenChange = onLegacyPoTokenChange,
+            onVisitorDataChange = onVisitorDataChange,
+            onDataSyncIdChange = onDataSyncIdChange,
+            onAccountNameChange = onAccountNameChange,
+            onAccountEmailChange = onAccountEmailChange,
+            onAccountChannelHandleChange = onAccountChannelHandleChange,
+            onDismiss = { showTokenEditor = false },
+        )
+    }
 }
 
