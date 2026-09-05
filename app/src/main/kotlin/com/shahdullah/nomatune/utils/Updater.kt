@@ -355,7 +355,8 @@ object Updater {
 
         val tag = latestReleaseTag
         if (tag != null) {
-            return "https://github.com/zlgskt6/Pixel-Music/releases/download/$tag/app-$distributionArtifactPrefix${BuildConfig.DEVICE}-${BuildConfig.ARCHITECTURE}-release.apk"
+            val cleanTag = if (tag.startsWith("v")) tag else "v$tag"
+            return "https://github.com/zlgskt6/Pixel-Music/releases/download/$cleanTag/Pixel-Music-release.apk"
         }
         return StableDownloadUrl
     }
@@ -570,12 +571,23 @@ object Updater {
                 return@runCatching cachedReleases ?: emptyList()
             }
 
-            val networkResult = runCatching {
+            val etagToUse = if (forceRefresh || cachedReleases.isNullOrEmpty()) null else cachedEtag
+
+            var networkResult = runCatching {
                 fetchReleasesNetwork(
                     perPage = perPage,
-                    cachedEtag = cachedEtag,
+                    cachedEtag = etagToUse,
                 )
             }.getOrNull()
+
+            if (networkResult?.status == HttpStatusCode.NotModified && cachedReleases.isNullOrEmpty()) {
+                networkResult = runCatching {
+                    fetchReleasesNetwork(
+                        perPage = perPage,
+                        cachedEtag = null,
+                    )
+                }.getOrNull()
+            }
 
             if (networkResult == null) {
                 val fallback = cachedReleases

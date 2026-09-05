@@ -829,7 +829,9 @@
     <string name="next">Next</string>
     <string name="allow">Allow</string>
     <string name="onboarding_welcome_title">Welcome to Pixel Music</string>
-    <string name="onboarding_welcome_subtitle">Set up playback, local music, and update permissions before you start listening.</string>
+    <string name="onboarding_welcome_subtitle">Stream music from Youtube, download tunes to listen offline, how much you want.</string>
+    <string name="onboarding_welcome_disclaimer">None of your search, listening history, or any data is collected or sold to anyone, not even the developer can access what you listen to.</string>
+    <string name="onboarding_continue">Continue</string>
     <string name="onboarding_permissions_title">Review permissions</string>
     <string name="onboarding_permissions_subtitle">Grant only what you want now. You can continue and allow permissions later.</string>
     <string name="onboarding_community_title">Stay connected</string>

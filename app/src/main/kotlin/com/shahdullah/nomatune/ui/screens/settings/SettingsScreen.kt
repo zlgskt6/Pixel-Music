@@ -19,6 +19,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -127,39 +128,11 @@ fun SettingsScreen(
         settingsGroups.flatMap { it.items }
     }
 
-    Scaffold(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
-        containerColor = MaterialTheme.colorScheme.surface,
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        topBar = {
-            LargeFlexibleTopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.settings),
-                        fontWeight = FontWeight.Bold,
-                    )
-                },
-                navigationIcon = {
-                    IconButton(
-                        onClick = navController::navigateUp,
-                        onLongClick = navController::backToMain,
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.arrow_back),
-                            contentDescription = stringResource(R.string.back_button_desc),
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.largeTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                ),
-                scrollBehavior = scrollBehavior,
-            )
-        },
-    ) { innerPadding ->
+            .background(MaterialTheme.colorScheme.surface),
+    ) {
         LazyColumn(
             state = listState,
             verticalArrangement = Arrangement.spacedBy(2.dp),
@@ -167,11 +140,11 @@ fun SettingsScreen(
                 .fillMaxSize()
                 .windowInsetsPadding(
                     LocalPlayerAwareWindowInsets.current.only(
-                        WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom,
+                        WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom + WindowInsetsSides.Top,
                     ),
                 ),
             contentPadding = PaddingValues(
-                top = innerPadding.calculateTopPadding(),
+                top = 12.dp,
                 bottom = 32.dp,
             ),
         ) {

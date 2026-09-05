@@ -100,7 +100,7 @@ fun PlayerSettings(
     )
     val (persistentQueue, onPersistentQueueChange) = rememberPreference(
         PersistentQueueKey,
-        defaultValue = true
+        defaultValue = false
     )
     val (permanentShuffle, onPermanentShuffleChange) = rememberPreference(
         PermanentShuffleKey,
@@ -397,12 +397,13 @@ fun PlayerSettings(
             item(visible = pauseOnDeviceMute) {
                 val context = LocalContext.current
                 val disabledLabel = stringResource(R.string.device_mute_recovery_volume_disabled)
-                val recoveryVolumeText = remember(context, disabledLabel) {
+                val percentFormat = stringResource(R.string.percentage_format)
+                val recoveryVolumeText = remember(disabledLabel, percentFormat) {
                     { value: Int ->
                         if (value == 0) {
                             disabledLabel
                         } else {
-                            context.getString(R.string.percentage_format, value)
+                            String.format(percentFormat, value)
                         }
                     }
                 }

@@ -173,10 +173,20 @@ fun NavGraphBuilder.navigationBuilder(
         MusicRecognitionScreen(navController)
     }
     composable(Screens.MoodAndGenres.route) {
-        val activity = LocalContext.current as? ComponentActivity
+        val context = LocalContext.current
+        val activity = remember(context) {
+            var ctx = context
+            while (ctx is android.content.ContextWrapper) {
+                if (ctx is ComponentActivity) return@remember ctx
+                ctx = ctx.baseContext
+            }
+            null
+        }
         val vm: MoodAndGenresViewModel =
             if (activity != null) hiltViewModel(activity) else hiltViewModel()
-        MoodAndGenresScreen(navController, viewModel = vm)
+        val homeVm: HomeViewModel = homeViewModel
+            ?: if (activity != null) hiltViewModel(activity) else hiltViewModel()
+        MoodAndGenresScreen(navController, viewModel = vm, homeViewModel = homeVm)
     }
     composable("account") {
         AccountScreen(navController, scrollBehavior)

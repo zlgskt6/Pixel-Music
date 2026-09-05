@@ -152,7 +152,11 @@ fun BottomSheet(
                     modifier =
                         Modifier
                             .graphicsLayer {
-                                alpha = 1f - (state.progress * 4).coerceAtMost(1f)
+                                alpha = if (state.progress < 0.15f) {
+                                    1f
+                                } else {
+                                    (1f - ((state.progress - 0.15f) / 0.25f)).coerceIn(0f, 1f)
+                                }
                             }.clickable(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null,

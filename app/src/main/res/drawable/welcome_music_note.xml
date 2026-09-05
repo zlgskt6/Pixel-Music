@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Pixel Music (2026)
+  ~ © Shahdullah — github.com/shahdullah
+  ~ GPL-3.0 License
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+
+    <!-- Subtle Outer Circular Border -->
+    <path
+        android:pathData="M 256, 16 A 240,240 0 1,0 256,496 A 240,240 0 1,0 256,16 Z"
+        android:strokeColor="#22D32F2F"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000" />
+
+    <!-- Double Eighth Note with Soft Cyan/Green/Amber Pastel Gradient -->
+    <path
+        android:pathData="M 192,142 L 352,112 L 352,328 C 338,318 318,312 296,312 C 252,312 216,337 216,368 C 216,399 252,424 296,424 C 340,424 376,399 376,368 L 376,140 L 216,170 L 216,352 C 202,342 182,336 160,336 C 116,336 80,361 80,392 C 80,423 116,448 160,448 C 204,448 240,423 240,392 L 240,178 L 352,148 L 352,112 L 192,142 Z M 216,182 L 352,154 L 352,182 L 216,210 Z"
+        android:strokeWidth="2">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="80"
+                android:startY="448"
+                android:endX="376"
+                android:endY="112"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#D0A5D6A7" />
+                <item android:offset="0.45" android:color="#D080DEEA" />
+                <item android:offset="0.85" android:color="#D0FFE082" />
+                <item android:offset="1.0" android:color="#D0F8BBD0" />
+            </gradient>
+        </aapt:attr>
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startX="80"
+                android:startY="448"
+                android:endX="376"
+                android:endY="112"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#8066BB6A" />
+                <item android:offset="0.5" android:color="#8026C6DA" />
+                <item android:offset="1.0" android:color="#80FFCA28" />
+            </gradient>
+        </aapt:attr>
+    </path>
+</vector>

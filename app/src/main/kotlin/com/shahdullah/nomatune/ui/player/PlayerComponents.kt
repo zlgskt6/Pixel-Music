@@ -2412,7 +2412,7 @@ private fun V8Header(
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,
-            color = foreground,
+            color = Color.White,
             textAlign = TextAlign.Center,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -2421,7 +2421,7 @@ private fun V8Header(
         Text(
             text = subtitle,
             style = MaterialTheme.typography.titleMedium,
-            color = secondaryForeground,
+            color = Color.White.copy(alpha = 0.85f),
             textAlign = TextAlign.Center,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -3276,7 +3276,7 @@ private fun V9Header(
             text = stringResource(R.string.now_playing),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.SemiBold,
-            color = textColor,
+            color = Color.White,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier

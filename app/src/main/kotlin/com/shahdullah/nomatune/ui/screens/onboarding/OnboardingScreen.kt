@@ -23,8 +23,11 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -35,6 +38,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -65,11 +69,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
@@ -292,7 +297,6 @@ private fun OnboardingSuccessContent(
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun WelcomePage(
     uiState: OnboardingUiState,
@@ -300,59 +304,78 @@ private fun WelcomePage(
     onBack: () -> Unit,
     onNext: () -> Unit,
 ) {
-    val page = uiState.pages[pageIndex]
-
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = OnboardingPagePadding,
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 24.dp, vertical = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(28.dp),
     ) {
-        item(key = page.id.name, contentType = "welcome") {
-            BoxWithConstraints(
-                modifier =
-                    Modifier
-                        .widthIn(max = OnboardingContentMaxWidth)
-                        .fillMaxWidth(),
-            ) {
-                if (maxWidth >= 620.dp) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(28.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Column(
-                            modifier = Modifier.weight(1.05f),
-                            verticalArrangement = Arrangement.spacedBy(18.dp),
-                        ) {
-                            LargePageTitle(page.titleResId, page.subtitleResId)
-                            OnboardingMetadataPills(uiState = uiState)
-                        }
-                        SunnyIdentityPanel(
-                            iconResId = page.iconResId,
-                            modifier = Modifier.weight(0.95f),
-                        )
-                    }
-                } else {
-                    Column(
-                        horizontalAlignment = Alignment.Start,
-                        verticalArrangement = Arrangement.spacedBy(30.dp),
-                    ) {
-                        LargePageTitle(page.titleResId, page.subtitleResId)
-                        OnboardingMetadataPills(uiState = uiState)
-                        Spacer(modifier = Modifier.heightIn(min = 24.dp))
-                        SunnyIdentityPanel(iconResId = page.iconResId)
-                    }
-                }
+        Spacer(modifier = Modifier.weight(0.8f))
+
+        Text(
+            text = stringResource(R.string.onboarding_welcome_title),
+            style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center,
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = stringResource(R.string.onboarding_welcome_subtitle),
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 8.dp),
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Surface(
+            modifier = Modifier.size(210.dp),
+            shape = CircleShape,
+            color = Color.White,
+            shadowElevation = 10.dp,
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Image(
+                    painter = painterResource(R.drawable.welcome_music_note),
+                    contentDescription = null,
+                    modifier = Modifier.size(160.dp),
+                )
             }
         }
-        item(key = "welcome-actions", contentType = "actions") {
-            OnboardingInlineActions(
-                currentPage = pageIndex,
-                pageCount = uiState.pages.size,
-                onBack = onBack,
-                onNext = onNext,
+
+        Spacer(modifier = Modifier.weight(1.2f))
+
+        Text(
+            text = stringResource(R.string.onboarding_welcome_disclaimer),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.75f),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 12.dp),
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Button(
+            onClick = onNext,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp),
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+            ),
+        ) {
+            Text(
+                text = stringResource(R.string.onboarding_continue),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
             )
         }
+
+        Spacer(modifier = Modifier.navigationBarsPadding())
     }
 }
 
@@ -435,41 +458,74 @@ private fun PermissionsPage(
     onNext: () -> Unit,
     onPermissionAction: (OnboardingPermissionAction) -> Unit,
 ) {
-    val page = uiState.pages[pageIndex]
-
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = OnboardingPagePadding,
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 24.dp, vertical = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
     ) {
-        item(key = page.id.name, contentType = "header") {
-            ExpressivePageHeader(
-                iconResId = page.iconResId,
-                titleResId = page.titleResId,
-                subtitleResId = page.subtitleResId,
+        Spacer(modifier = Modifier.height(28.dp))
+
+        Text(
+            text = stringResource(R.string.onboarding_permissions_title),
+            style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center,
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = stringResource(R.string.onboarding_permissions_subtitle),
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 8.dp),
+        )
+
+        Spacer(modifier = Modifier.height(28.dp))
+
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            itemsIndexed(
+                items = uiState.permissions,
+                key = { _, item -> item.id.name },
+                contentType = { _, item -> "permission-${item.id.name}" },
+            ) { index, item ->
+                PermissionRow(
+                    permission = item,
+                    index = index,
+                    count = uiState.permissions.size,
+                    onPermissionAction = onPermissionAction,
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Button(
+            onClick = onNext,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp),
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+            ),
+        ) {
+            Text(
+                text = stringResource(R.string.onboarding_finish),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
             )
         }
-        itemsIndexed(
-            items = uiState.permissions,
-            key = { _, item -> item.id.name },
-            contentType = { _, item -> "permission-${item.id.name}" },
-        ) { index, item ->
-            PermissionRow(
-                permission = item,
-                index = index,
-                count = uiState.permissions.size,
-                onPermissionAction = onPermissionAction,
-            )
-        }
-        item(key = "permission-actions", contentType = "actions") {
-            OnboardingInlineActions(
-                currentPage = pageIndex,
-                pageCount = uiState.pages.size,
-                onBack = onBack,
-                onNext = onNext,
-            )
-        }
+
+        Spacer(modifier = Modifier.navigationBarsPadding())
     }
 }
 

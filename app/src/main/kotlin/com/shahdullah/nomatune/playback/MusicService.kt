@@ -1100,7 +1100,7 @@ class MusicService :
 
         scope.launch(Dispatchers.IO) {
             runCatching {
-                if (dataStore.get(PersistentQueueKey, true)) {
+                if (dataStore.get(PersistentQueueKey, false)) {
                     playerInitialized.first { it }
                     val persistedQueue = readPersistentObject<PersistQueue>(PERSISTENT_QUEUE_FILE)
                     val persistedPlayerState = readPersistentObject<PersistPlayerState>(PERSISTENT_PLAYER_STATE_FILE)
@@ -1121,6 +1121,8 @@ class MusicService :
                     } finally {
                         isRestoringPersistentState = false
                     }
+                } else {
+                    clearPersistedQueueFiles()
                 }
             }.onFailure { error ->
                 if (error is CancellationException) throw error
@@ -1137,7 +1139,7 @@ class MusicService :
         scope.launch {
             while (isActive) {
                 delay(if (player.isPlaying) 10.seconds else 30.seconds)
-                val shouldSave = withContext(Dispatchers.IO) { dataStore.get(PersistentQueueKey, true) }
+                val shouldSave = withContext(Dispatchers.IO) { dataStore.get(PersistentQueueKey, false) }
                 if (shouldSave && player.mediaItemCount > 0) {
                     saveQueueToDisk()
                 }
@@ -1224,7 +1226,7 @@ class MusicService :
                             if (hydrationGeneration == restoredQueueHydrationGeneration.get()) {
                                 isHydratingRestoredQueue = false
                                 restoredQueueBackfillJob = null
-                                if (isActive && dataStore.get(PersistentQueueKey, true) && player.mediaItemCount > 0) {
+                                if (isActive && dataStore.get(PersistentQueueKey, false) && player.mediaItemCount > 0) {
                                     saveQueueToDisk()
                                 }
                             }
@@ -4645,7 +4647,7 @@ class MusicService :
     }
 
     scope.launch {
-        val shouldSave = withContext(Dispatchers.IO) { dataStore.get(PersistentQueueKey, true) }
+        val shouldSave = withContext(Dispatchers.IO) { dataStore.get(PersistentQueueKey, false) }
         if (shouldSave) {
             saveQueueToDisk()
         }
@@ -4673,7 +4675,7 @@ class MusicService :
     widgetUpdater.updateProgressTracking()
 
     scope.launch {
-        val shouldSave = withContext(Dispatchers.IO) { dataStore.get(PersistentQueueKey, true) }
+        val shouldSave = withContext(Dispatchers.IO) { dataStore.get(PersistentQueueKey, false) }
         if (shouldSave) {
             saveQueueToDisk()
         }
@@ -5055,7 +5057,7 @@ private fun onMediaItemTransitionInternal() {
     // Persist queue on play/pause so a force-stop right after pausing still restores the correct position
     if (events.contains(Player.EVENT_PLAY_WHEN_READY_CHANGED) && player.mediaItemCount > 0) {
         scope.launch(SilentHandler) {
-            if (withContext(Dispatchers.IO) { dataStore.get(PersistentQueueKey, true) }) {
+            if (withContext(Dispatchers.IO) { dataStore.get(PersistentQueueKey, false) }) {
                 saveQueueToDisk()
             }
         }
@@ -5104,7 +5106,7 @@ private fun onMediaItemTransitionInternal() {
         
         // Save state when shuffle mode changes - must be on Main thread to access player
         scope.launch {
-            if (dataStore.get(PersistentQueueKey, true)) {
+            if (dataStore.get(PersistentQueueKey, false)) {
                 saveQueueToDisk()
             }
         }
@@ -5138,7 +5140,7 @@ private fun onMediaItemTransitionInternal() {
         
         // Save state when repeat mode changes - must be on Main thread to access player
         scope.launch {
-            if (dataStore.get(PersistentQueueKey, true)) {
+            if (dataStore.get(PersistentQueueKey, false)) {
                 saveQueueToDisk()
             }
         }
@@ -6135,7 +6137,7 @@ private fun onMediaItemTransitionInternal() {
             releaseAudioEffects()
         } catch (_: Exception) {}
         try {
-            if (dataStore.get(PersistentQueueKey, true) && player.mediaItemCount > 0) {
+            if (dataStore.get(PersistentQueueKey, false) && player.mediaItemCount > 0) {
                 runBlocking {
                     saveQueueToDisk()
                 }
@@ -6214,7 +6216,7 @@ private fun onMediaItemTransitionInternal() {
                 }
             }
 
-            if (dataStore.get(PersistentQueueKey, true) && player.mediaItemCount > 0) {
+            if (dataStore.get(PersistentQueueKey, false) && player.mediaItemCount > 0) {
                 runBlocking { saveQueueToDisk() }
             }
         } catch (_: Exception) {}

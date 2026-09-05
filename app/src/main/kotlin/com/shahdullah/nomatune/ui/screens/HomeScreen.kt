@@ -279,18 +279,7 @@ fun HomeScreen(
             onRefresh = viewModel::refresh,
             modifier = Modifier.fillMaxSize(),
         ) {
-            BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-                val horizontalLazyGridItemWidthFactor = if (maxWidth * 0.475f >= 320.dp) 0.475f else 0.9f
-                val horizontalLazyGridItemWidth = maxWidth * horizontalLazyGridItemWidthFactor
-                val forgottenFavoritesSnapLayoutInfoProvider = remember(forgottenFavoritesLazyGridState) {
-                    SnapLayoutInfoProvider(
-                        lazyGridState = forgottenFavoritesLazyGridState,
-                        positionInLayout = { layoutSize, itemSize ->
-                            (layoutSize * horizontalLazyGridItemWidthFactor / 2f - itemSize / 2f)
-                        }
-                    )
-                }
-
+            Box(modifier = Modifier.fillMaxSize()) {
                 LazyColumn(
                     state = lazylistState,
                     contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues()
@@ -390,72 +379,8 @@ fun HomeScreen(
                     haptic = haptic,
                     scope = scope
                 )
-
-                forgottenFavorites?.takeIf { it.isNotEmpty() }?.let { favorites ->
-                    item {
-                        NavigationTitle(
-                            title = stringResource(R.string.forgotten_favorites),
-                            modifier = Modifier.animateItem()
-                        )
-                    }
-
-                    item {
-                        ForgottenFavoritesSection(
-                            forgottenFavorites = favorites,
-                            mediaMetadata = mediaMetadata,
-                            isPlaying = isPlaying,
-                            horizontalLazyGridItemWidth = horizontalLazyGridItemWidth,
-                            lazyGridState = forgottenFavoritesLazyGridState,
-                            snapLayoutInfoProvider = forgottenFavoritesSnapLayoutInfoProvider,
-                            navController = navController,
-                            playerConnection = playerConnection,
-                            menuState = menuState,
-                            haptic = haptic
-                        )
-                    }
-                }
-
-                SimilarRecommendationsContainer(
-                    viewModel = viewModel,
-                    mediaMetadata = mediaMetadata,
-                    isPlaying = isPlaying,
-                    navController = navController,
-                    playerConnection = playerConnection,
-                    menuState = menuState,
-                    haptic = haptic,
-                    scope = scope
-                )
-
-                homePage?.sections?.forEach { section ->
-                    item {
-                        HomePageSectionTitle(
-                            section = section,
-                            navController = navController,
-                            modifier = Modifier.animateItem()
-                        )
-                    }
-
-                    item {
-                        HomePageSectionContent(
-                            section = section,
-                            mediaMetadata = mediaMetadata,
-                            isPlaying = isPlaying,
-                            navController = navController,
-                            playerConnection = playerConnection,
-                            menuState = menuState,
-                            haptic = haptic,
-                            scope = scope
-                        )
-                    }
-                }
-
-                if (isLoading || homePage?.continuation != null && homePage?.sections?.isNotEmpty() == true) {
-                    item {
-                        HomeLoadingShimmer(modifier = Modifier.animateItem())
-                    }
-                }
-                }
             }
         }
     }
+}
 }

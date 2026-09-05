@@ -12,7 +12,6 @@
 
 package com.shahdullah.nomatune.ui.screens
 
-import android.net.Uri
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -24,6 +23,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -35,13 +35,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -55,6 +53,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -69,6 +68,7 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -85,6 +85,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.shahdullah.nomatune.innertube.YouTube
 import com.shahdullah.nomatune.innertube.models.BrowseEndpoint
+import com.shahdullah.nomatune.innertube.pages.MoodAndGenres
 import com.shahdullah.nomatune.LocalPlayerAwareWindowInsets
 import com.shahdullah.nomatune.LocalPlayerConnection
 import com.shahdullah.nomatune.R
@@ -92,9 +93,12 @@ import com.shahdullah.nomatune.extensions.toMediaItem
 import com.shahdullah.nomatune.library.LibraryTopMixId
 import com.shahdullah.nomatune.viewmodels.LibraryTopMixUiModel
 import com.shahdullah.nomatune.playback.queues.ListQueue
+import com.shahdullah.nomatune.ui.component.LocalMenuState
 import com.shahdullah.nomatune.ui.component.NavigationTitle
 import com.shahdullah.nomatune.ui.component.shimmer.ShimmerHost
 import com.shahdullah.nomatune.ui.component.shimmer.TextPlaceholder
+import com.shahdullah.nomatune.ui.utils.SnapLayoutInfoProvider
+import com.shahdullah.nomatune.viewmodels.HomeViewModel
 import com.shahdullah.nomatune.viewmodels.LibraryMixViewModel
 import com.shahdullah.nomatune.viewmodels.LibraryTopMixesUiState
 import com.shahdullah.nomatune.viewmodels.MoodAndGenresViewModel
@@ -105,12 +109,26 @@ import java.util.concurrent.ConcurrentHashMap
 fun MoodAndGenresScreen(
     navController: NavController,
     viewModel: MoodAndGenresViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel = hiltViewModel(),
     libraryMixViewModel: LibraryMixViewModel = hiltViewModel(),
 ) {
     val moodAndGenres by viewModel.moodAndGenres.collectAsState()
     val topMixesUiState by libraryMixViewModel.topMixesUiState.collectAsStateWithLifecycle()
-    val playerConnection = LocalPlayerConnection.current
-    val gridState = rememberLazyGridState()
+    val playerConnection = LocalPlayerConnection.current ?: return
+    val menuState = LocalMenuState.current
+    val haptic = LocalHapticFeedback.current
+    val scope = rememberCoroutineScope()
+
+    val mediaMetadata by playerConnection.mediaMetadata.collectAsStateWithLifecycle()
+    val isPlaying by playerConnection.isPlaying.collectAsStateWithLifecycle()
+
+    val forgottenFavorites by homeViewModel.forgottenFavorites.collectAsStateWithLifecycle()
+    val homePage by homeViewModel.homePage.collectAsStateWithLifecycle()
+    val isLoading by homeViewModel.isLoading.collectAsStateWithLifecycle()
+
+    val forgottenFavoritesLazyGridState = rememberLazyGridState()
+
+    val listState = rememberLazyListState()
     val density = LocalDensity.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
     val topPadding = with(density) { windowInsets.getTop(this).toDp() }
@@ -121,74 +139,238 @@ fun MoodAndGenresScreen(
 
     LaunchedEffect(scrollToTop?.value) {
         if (scrollToTop?.value == true) {
-            gridState.animateScrollToItem(0)
+            listState.animateScrollToItem(0)
             backStackEntry?.savedStateHandle?.set("scrollToTop", false)
         }
     }
 
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 180.dp),
-        state = gridState,
-        contentPadding = PaddingValues(
-            start = 6.dp,
-            top = topPadding,
-            end = 6.dp,
-            bottom = bottomPadding,
-        ),
-    ) {
-        item(span = { GridItemSpan(maxLineSpan) }, key = "top_mixes") {
-            TopMixesForYouSection(
-                state = topMixesUiState,
-                onPlayMix = { mix ->
-                    playerConnection?.playQueue(
-                        ListQueue(
-                            items = mix.tracks.map { it.toMediaItem() },
-                        ),
+    val newReleasesSection = remember(homePage) {
+        homePage?.sections?.firstOrNull { section ->
+            val title = section.title?.lowercase().orEmpty()
+            title.contains("new release") || (title.contains("new") && title.contains("release"))
+        }
+    }
+    val otherSections = remember(homePage, newReleasesSection) {
+        homePage?.sections?.filter { it != newReleasesSection }.orEmpty()
+    }
+
+    val randomized6MoodAndGenres = remember(moodAndGenres) {
+        moodAndGenres?.shuffled()?.take(6)
+    }
+
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        val horizontalLazyGridItemWidthFactor = if (maxWidth * 0.475f >= 320.dp) 0.475f else 0.9f
+        val horizontalLazyGridItemWidth = maxWidth * horizontalLazyGridItemWidthFactor
+        val forgottenFavoritesSnapLayoutInfoProvider = remember(forgottenFavoritesLazyGridState) {
+            SnapLayoutInfoProvider(
+                lazyGridState = forgottenFavoritesLazyGridState,
+                positionInLayout = { layoutSize, itemSize ->
+                    (layoutSize * horizontalLazyGridItemWidthFactor / 2f - itemSize / 2f)
+                }
+            )
+        }
+
+        LazyColumn(
+            state = listState,
+            contentPadding = PaddingValues(
+                start = 6.dp,
+                top = topPadding,
+                end = 6.dp,
+                bottom = bottomPadding,
+            ),
+        ) {
+            newReleasesSection?.let { section ->
+                item {
+                    HomePageSectionTitle(
+                        section = section,
+                        navController = navController,
+                        modifier = Modifier.animateItem()
                     )
-                },
-                modifier = Modifier.padding(bottom = 12.dp)
-            )
-        }
+                }
 
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            NavigationTitle(
-                title = stringResource(R.string.what_are_you_feeling_like),
-                modifier = Modifier.animateItem(),
-            )
-        }
-
-        if (moodAndGenres == null) {
-            items(
-                count = 12,
-                key = { index -> "mood_genres_shimmer_$index" },
-                contentType = { "mood_genres_shimmer" },
-            ) {
-                ShimmerHost {
-                    TextPlaceholder(
-                        height = MoodAndGenresButtonHeight,
-                        shape = MoodAndGenresButtonShape,
-                        modifier = Modifier.padding(6.dp),
+                item {
+                    HomePageSectionContent(
+                        section = section,
+                        mediaMetadata = mediaMetadata,
+                        isPlaying = isPlaying,
+                        navController = navController,
+                        playerConnection = playerConnection,
+                        menuState = menuState,
+                        haptic = haptic,
+                        scope = scope
                     )
                 }
             }
-        } else {
-            items(
-                items = moodAndGenres.orEmpty(),
-                key = { item -> "${item.title}:${item.endpoint.browseId}:${item.endpoint.params}" },
-                contentType = { "mood_genres_item" },
-            ) { item ->
-                MoodAndGenresButton(
-                    title = item.title,
-                    stripeColor = item.stripeColor,
-                    endpoint = item.endpoint,
-                    onClick = {
-                        navController.navigate("youtube_browse/${item.endpoint.browseId}?params=${item.endpoint.params}")
+
+            item(key = "top_mixes") {
+                TopMixesForYouSection(
+                    state = topMixesUiState,
+                    onPlayMix = { mix ->
+                        playerConnection.playQueue(
+                            ListQueue(
+                                items = mix.tracks.map { it.toMediaItem() },
+                            ),
+                        )
                     },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(6.dp)
-                        .animateItem(),
+                    modifier = Modifier.padding(bottom = 12.dp)
                 )
+            }
+
+            forgottenFavorites?.takeIf { it.isNotEmpty() }?.let { favorites ->
+                item {
+                    NavigationTitle(
+                        title = stringResource(R.string.forgotten_favorites),
+                        modifier = Modifier.animateItem()
+                    )
+                }
+
+                item {
+                    ForgottenFavoritesSection(
+                        forgottenFavorites = favorites,
+                        mediaMetadata = mediaMetadata,
+                        isPlaying = isPlaying,
+                        horizontalLazyGridItemWidth = horizontalLazyGridItemWidth,
+                        lazyGridState = forgottenFavoritesLazyGridState,
+                        snapLayoutInfoProvider = forgottenFavoritesSnapLayoutInfoProvider,
+                        navController = navController,
+                        playerConnection = playerConnection,
+                        menuState = menuState,
+                        haptic = haptic
+                    )
+                }
+            }
+
+            SimilarRecommendationsContainer(
+                viewModel = homeViewModel,
+                mediaMetadata = mediaMetadata,
+                isPlaying = isPlaying,
+                navController = navController,
+                playerConnection = playerConnection,
+                menuState = menuState,
+                haptic = haptic,
+                scope = scope
+            )
+
+            otherSections.forEach { section ->
+                item {
+                    HomePageSectionTitle(
+                        section = section,
+                        navController = navController,
+                        modifier = Modifier.animateItem()
+                    )
+                }
+
+                item {
+                    HomePageSectionContent(
+                        section = section,
+                        mediaMetadata = mediaMetadata,
+                        isPlaying = isPlaying,
+                        navController = navController,
+                        playerConnection = playerConnection,
+                        menuState = menuState,
+                        haptic = haptic,
+                        scope = scope
+                    )
+                }
+            }
+
+            if (isLoading || (homePage?.continuation != null && homePage?.sections?.isNotEmpty() == true)) {
+                item {
+                    HomeLoadingShimmer(modifier = Modifier.animateItem())
+                }
+            }
+
+            item {
+                NavigationTitle(
+                    title = stringResource(R.string.what_are_you_feeling_like),
+                    modifier = Modifier.animateItem(),
+                )
+            }
+
+            item {
+                MoodAndGenresSection(
+                    moodAndGenres = randomized6MoodAndGenres,
+                    onItemClick = { item ->
+                        navController.navigate("youtube_browse/${item.endpoint.browseId}?params=${item.endpoint.params}")
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun MoodAndGenresSection(
+    moodAndGenres: List<MoodAndGenres.Item>?,
+    onItemClick: (MoodAndGenres.Item) -> Unit,
+) {
+    if (moodAndGenres == null) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 6.dp)
+        ) {
+            repeat(3) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    ShimmerHost(modifier = Modifier.weight(1f)) {
+                        TextPlaceholder(
+                            height = MoodAndGenresButtonHeight,
+                            shape = MoodAndGenresButtonShape,
+                        )
+                    }
+                    ShimmerHost(modifier = Modifier.weight(1f)) {
+                        TextPlaceholder(
+                            height = MoodAndGenresButtonHeight,
+                            shape = MoodAndGenresButtonShape,
+                        )
+                    }
+                }
+            }
+        }
+    } else {
+        val pairs = remember(moodAndGenres) { moodAndGenres.chunked(2) }
+        Column(
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 6.dp)
+        ) {
+            pairs.forEach { pair ->
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    val item1 = pair.getOrNull(0)
+                    val item2 = pair.getOrNull(1)
+
+                    if (item1 != null) {
+                        MoodAndGenresButton(
+                            title = item1.title,
+                            stripeColor = item1.stripeColor,
+                            endpoint = item1.endpoint,
+                            onClick = { onItemClick(item1) },
+                            modifier = Modifier.weight(1f),
+                        )
+                    } else {
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+
+                    if (item2 != null) {
+                        MoodAndGenresButton(
+                            title = item2.title,
+                            stripeColor = item2.stripeColor,
+                            endpoint = item2.endpoint,
+                            onClick = { onItemClick(item2) },
+                            modifier = Modifier.weight(1f),
+                        )
+                    } else {
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                }
             }
         }
     }

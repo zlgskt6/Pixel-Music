@@ -423,7 +423,7 @@ fun LyricsV2(
         if (showMaxSelectionToast) {
             Toast.makeText(
                 context,
-                context.getString(R.string.max_selection_limit, maxSelectionLimit),
+                context.resources.getString(R.string.max_selection_limit),
                 Toast.LENGTH_SHORT
             ).show()
             showMaxSelectionToast = false

@@ -179,12 +179,16 @@ fun DiscordSettings(
     val activeDiscordName = authorizedName.ifBlank { discordName }
     val activeDiscordAvatarUrl = authorizedAvatarUrl.ifBlank { discordAvatarUrl }
     val isLoggedIn = remember(activeDiscordToken) { activeDiscordToken.isNotBlank() }
-    val accountDisplayName = remember(isLoggedIn, activeDiscordName, activeDiscordUsername, context) {
+    val accountLabel = stringResource(R.string.account)
+    val notLoggedInLabel = stringResource(R.string.not_logged_in)
+    val discordRefreshSuccessLabel = stringResource(R.string.discord_refresh_success)
+    val discordRefreshFailedLabel = stringResource(R.string.discord_refresh_failed)
+    val accountDisplayName = remember(isLoggedIn, activeDiscordName, activeDiscordUsername, accountLabel, notLoggedInLabel) {
         when {
             activeDiscordName.isNotBlank() -> activeDiscordName
             activeDiscordUsername.isNotBlank() -> activeDiscordUsername
-            isLoggedIn -> context.getString(R.string.account)
-            else -> context.getString(R.string.not_logged_in)
+            isLoggedIn -> accountLabel
+            else -> notLoggedInLabel
         }
     }
 
@@ -202,7 +206,7 @@ fun DiscordSettings(
             )
         }.onFailure {
             authorizationUiModeName = DiscordAuthorizationUiMode.Failure.name
-            authorizationMessage = it.message ?: context.getString(R.string.discord_authorization_failed)
+            authorizationMessage = it.message ?: notLoggedInLabel
         }
     }
 
@@ -231,11 +235,11 @@ fun DiscordSettings(
                 discordUsername = authorizedUsername
                 discordName = authorizedName
                 discordAvatarUrl = authorizedAvatarUrl
-                authorizationMessage = context.getString(R.string.discord_authorization_success)
+                authorizationMessage = accountLabel
                 authorizationUiModeName = DiscordAuthorizationUiMode.Success.name
                 authorizationSession = DiscordOAuthRepository.createAuthorizationSession()
             }.onFailure {
-                authorizationMessage = it.message ?: context.getString(R.string.discord_authorization_failed)
+                authorizationMessage = it.message ?: notLoggedInLabel
                 authorizationUiModeName = DiscordAuthorizationUiMode.Failure.name
                 authorizationSession = DiscordOAuthRepository.createAuthorizationSession()
             }
@@ -426,7 +430,7 @@ fun DiscordSettings(
                 },
                 colors = TopAppBarDefaults.largeTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    scrolledContainerColor = Color.Transparent,
                 ),
                 scrollBehavior = scrollBehavior,
             )
@@ -500,9 +504,9 @@ fun DiscordSettings(
                                                 isRefreshing = false
                                                 snackbarHostState.showSnackbar(
                                                     message = if (success) {
-                                                        context.getString(R.string.discord_refresh_success)
+                                                        discordRefreshSuccessLabel
                                                     } else {
-                                                        context.getString(R.string.discord_refresh_failed)
+                                                        discordRefreshFailedLabel
                                                     },
                                                 )
                                             }

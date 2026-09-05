@@ -116,6 +116,12 @@ class BuildOnboardingUiStateUseCase
             val pages =
                 ImmutableList.of(
                     OnboardingPageUiModel(
+                        id = OnboardingPageId.WELCOME,
+                        titleResId = R.string.onboarding_welcome_title,
+                        subtitleResId = R.string.onboarding_welcome_subtitle,
+                        iconResId = R.drawable.app_icon_foreground,
+                    ),
+                    OnboardingPageUiModel(
                         id = OnboardingPageId.PERMISSIONS,
                         titleResId = R.string.onboarding_permissions_title,
                         subtitleResId = R.string.onboarding_permissions_subtitle,
