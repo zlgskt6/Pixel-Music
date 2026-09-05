@@ -812,6 +812,7 @@ fun LyricsMenu(
         }
 
     LazyColumn(
+        modifier = Modifier.fillMaxWidth(),
         userScrollEnabled = true,
         contentPadding = PaddingValues(
             start = 0.dp,

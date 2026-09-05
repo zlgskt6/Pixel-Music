@@ -1,6 +1,8 @@
 {
   "name": "Pixel Music",
-  "description": "A feature-rich YouTube Music and offline audio player for Android built with Jetpack Compose.",
+  "description": "A modern Material 3 Expressive Android music player with YouTube Music integration, local file playback, and synced lyrics.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

@@ -124,7 +124,6 @@ fun MoodAndGenresScreen(
 
     val forgottenFavorites by homeViewModel.forgottenFavorites.collectAsStateWithLifecycle()
     val homePage by homeViewModel.homePage.collectAsStateWithLifecycle()
-    val isLoading by homeViewModel.isLoading.collectAsStateWithLifecycle()
 
     val forgottenFavoritesLazyGridState = rememberLazyGridState()
 
@@ -271,12 +270,6 @@ fun MoodAndGenresScreen(
                         haptic = haptic,
                         scope = scope
                     )
-                }
-            }
-
-            if (isLoading || (homePage?.continuation != null && homePage?.sections?.isNotEmpty() == true)) {
-                item {
-                    HomeLoadingShimmer(modifier = Modifier.animateItem())
                 }
             }
 

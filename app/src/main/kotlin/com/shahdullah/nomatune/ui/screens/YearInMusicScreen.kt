@@ -740,6 +740,7 @@ private fun TopSongRecapCard(
     onClick: () -> Unit,
     onLongClick: () -> Unit,
 ) {
+    val (disableBlur) = rememberPreference(DisableBlurKey, false)
     val imageModel = rememberShareSafeImageRequest(card.song.thumbnailUrl)
 
     Box(
@@ -756,7 +757,7 @@ private fun TopSongRecapCard(
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()
-                .blur(18.dp),
+                .then(if (!disableBlur) Modifier.blur(18.dp) else Modifier),
         )
         Box(
             modifier = Modifier

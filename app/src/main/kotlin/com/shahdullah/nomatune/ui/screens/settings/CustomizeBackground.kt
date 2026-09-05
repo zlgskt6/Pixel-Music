@@ -46,6 +46,7 @@ import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.shahdullah.nomatune.constants.PlayerBackgroundStyle
 import com.shahdullah.nomatune.R
+import com.shahdullah.nomatune.constants.DisableBlurKey
 import com.shahdullah.nomatune.constants.PlayerCustomBrightnessKey
 import com.shahdullah.nomatune.constants.PlayerCustomContrastKey
 import com.shahdullah.nomatune.constants.PlayerCustomImageUriKey
@@ -59,6 +60,7 @@ fun CustomizeBackground(
 ) {
     val context = LocalContext.current
 
+    val (disableBlur) = rememberPreference(DisableBlurKey, false)
     val (imageUri, onImageUriChange) = rememberPreference(PlayerCustomImageUriKey, "")
     val (blur, onBlurChange) = rememberPreference(PlayerCustomBlurKey, 0f)
     val (contrast, onContrastChange) = rememberPreference(PlayerCustomContrastKey, 1f)
@@ -123,7 +125,7 @@ fun CustomizeBackground(
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxSize()
-                            .blur(blur.dp),
+                            .then(if (!disableBlur && blur > 0f) Modifier.blur(blur.dp) else Modifier),
                         contentScale = ContentScale.Crop,
                         colorFilter = ColorFilter.colorMatrix(cm)
                     )
@@ -168,7 +170,7 @@ fun CustomizeBackground(
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxSize()
-                            .blur(blur.dp),
+                            .then(if (!disableBlur && blur > 0f) Modifier.blur(blur.dp) else Modifier),
                         contentScale = ContentScale.Crop,
                         colorFilter = ColorFilter.colorMatrix(cm2)
                     )

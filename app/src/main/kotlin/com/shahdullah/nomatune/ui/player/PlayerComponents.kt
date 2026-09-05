@@ -21,11 +21,13 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
@@ -91,6 +93,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -1691,6 +1694,7 @@ fun PlayerControlsContent(
     onSliderValueChange: (Long) -> Unit,
     onSliderValueChangeFinished: () -> Unit,
     currentFormat: FormatEntity? = null,
+    isLyricsVisible: Boolean = false,
 ) {
     val currentSong by playerConnection.currentSong.collectAsState(initial = null)
     val currentSongLiked = currentSong?.song?.liked == true
@@ -1701,12 +1705,35 @@ fun PlayerControlsContent(
         label = "playPauseRoundness",
     )
 
+    val titleRowAlpha by animateFloatAsState(
+        targetValue = if (isLyricsVisible) 0f else 1f,
+        animationSpec = tween(durationMillis = 380, easing = FastOutSlowInEasing),
+        label = "playerControlsTitleRowAlpha",
+    )
+
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = PlayerHorizontalPadding),
+            .padding(horizontal = PlayerHorizontalPadding)
+            .graphicsLayer {
+                alpha = titleRowAlpha
+            }
+            .then(
+                if (isLyricsVisible || titleRowAlpha < 0.05f) {
+                    Modifier.pointerInput(Unit) {
+                        awaitPointerEventScope {
+                            while (true) {
+                                val event = awaitPointerEvent()
+                                event.changes.forEach { it.consume() }
+                            }
+                        }
+                    }
+                } else {
+                    Modifier
+                }
+            ),
     ) {
         Column(modifier = Modifier.weight(1f)) {
             PlayerTitleSection(

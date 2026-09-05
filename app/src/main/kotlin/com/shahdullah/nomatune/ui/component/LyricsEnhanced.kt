@@ -114,6 +114,7 @@ import kotlinx.coroutines.isActive
 import com.shahdullah.nomatune.LocalAnimationsDisabled
 import com.shahdullah.nomatune.LocalPlayerConnection
 import com.shahdullah.nomatune.R
+import com.shahdullah.nomatune.constants.DisableBlurKey
 import com.shahdullah.nomatune.constants.LyricsClickKey
 import com.shahdullah.nomatune.constants.LyricsLineBlurKey
 import com.shahdullah.nomatune.constants.LyricsRomanizeChineseKey
@@ -183,6 +184,7 @@ fun LyricsEnhanced(
 
     val (lyricsClick) = rememberPreference(LyricsClickKey, defaultValue = true)
     val (lyricsTextSize) = rememberPreference(LyricsTextSizeKey, defaultValue = 26f)
+    val (disableBlur) = rememberPreference(DisableBlurKey, defaultValue = false)
     val (lyricsLineBlurPreference) = rememberPreference(LyricsLineBlurKey, defaultValue = true)
     val (romanizeChinese) = rememberPreference(LyricsRomanizeChineseKey, defaultValue = true)
     val (romanizeHindi) = rememberPreference(LyricsRomanizeHindiKey, defaultValue = true)
@@ -209,7 +211,7 @@ fun LyricsEnhanced(
         MaterialTheme.colorScheme.onBackground
     else
         Color.White
-    val lyricsLineBlur = lyricsLineBlurOverride ?: lyricsLineBlurPreference
+    val lyricsLineBlur = !disableBlur && (lyricsLineBlurOverride ?: lyricsLineBlurPreference)
 
     var isSelectionModeActive by rememberSaveable { mutableStateOf(false) }
     val selectedLineKeys = remember { mutableStateListOf<String>() }

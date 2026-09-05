@@ -1,19 +1,11 @@
-// Sanitize environment variables for AGP compatibility
-try {
-    val processEnv = Class.forName("java.lang.ProcessEnvironment")
-    val fields = listOf("theEnvironment", "theCaseInsensitiveEnvironment", "theUnmodifiableEnvironment")
-    for (fieldName in fields) {
-        try {
-            val field = processEnv.getDeclaredField(fieldName)
-            field.isAccessible = true
-            val map = field.get(null) as? MutableMap<Any, Any>
-            map?.keys?.filter { it.toString().equals("ANDROID_PREFS_ROOT", ignoreCase = true) }?.forEach { map.remove(it) }
-        } catch (_: Throwable) {}
-    }
-} catch (_: Throwable) {}
-System.clearProperty("ANDROID_PREFS_ROOT")
+@file:Suppress("UnstableApiUsage")
 
 pluginManagement {
+    // Workaround for https://issuetracker.google.com/issues/325700863
+    // Several environment variables and/or system properties contain different paths to the Android Preferences folder.
+    // AGP 9.2.1+ fails fast if both ANDROID_PREFS_ROOT and ANDROID_USER_HOME are set.
+    System.clearProperty("ANDROID_PREFS_ROOT")
+
     repositories {
         google {
             content {

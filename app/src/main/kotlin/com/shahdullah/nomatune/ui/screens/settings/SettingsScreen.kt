@@ -77,8 +77,36 @@ import com.shahdullah.nomatune.utils.Updater
 @Composable
 fun SettingsScreen(
     navController: NavController,
-    scrollBehavior: TopAppBarScrollBehavior,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
     latestVersionName: String,
+    onClearUpdateBadge: () -> Unit = {},
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.surface),
+    ) {
+        SettingsScreenContent(
+            navController = navController,
+            latestVersionName = latestVersionName,
+            onClearUpdateBadge = onClearUpdateBadge,
+            modifier = Modifier
+                .fillMaxSize()
+                .windowInsetsPadding(
+                    LocalPlayerAwareWindowInsets.current.only(
+                        WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom + WindowInsetsSides.Top,
+                    ),
+                ),
+        )
+    }
+}
+
+@Composable
+fun SettingsScreenContent(
+    navController: NavController,
+    latestVersionName: String,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(top = 12.dp, bottom = 32.dp),
     onClearUpdateBadge: () -> Unit = {},
 ) {
     val context = LocalContext.current
@@ -128,85 +156,70 @@ fun SettingsScreen(
         settingsGroups.flatMap { it.items }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface),
+    LazyColumn(
+        state = listState,
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+        modifier = modifier,
+        contentPadding = contentPadding,
     ) {
-        LazyColumn(
-            state = listState,
-            verticalArrangement = Arrangement.spacedBy(2.dp),
-            modifier = Modifier
-                .fillMaxSize()
-                .windowInsetsPadding(
-                    LocalPlayerAwareWindowInsets.current.only(
-                        WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom + WindowInsetsSides.Top,
-                    ),
-                ),
-            contentPadding = PaddingValues(
-                top = 12.dp,
-                bottom = 32.dp,
-            ),
-        ) {
-            item(key = "profile_header", contentType = "settings_profile") {
-                SettingsProfileHeader(
-                    navController = navController,
+        item(key = "profile_header", contentType = "settings_profile") {
+            SettingsProfileHeader(
+                navController = navController,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 12.dp),
+            )
+        }
+
+        if (hasUpdate && !isUpdateDismissed) {
+            item(key = "update", contentType = "settings_banner") {
+                SettingsUpdateBanner(
+                    latestVersion = latestVersionName,
+                    onClick = { navController.navigate("settings/update") },
+                    onDismiss = { isUpdateDismissed = true },
                     modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 12.dp),
+                        .padding(horizontal = SettingsDimensions.ScreenHorizontalPadding)
+                        .padding(bottom = SettingsDimensions.SectionSpacing),
                 )
             }
+        }
 
-            if (hasUpdate && !isUpdateDismissed) {
-                item(key = "update", contentType = "settings_banner") {
-                    SettingsUpdateBanner(
-                        latestVersion = latestVersionName,
-                        onClick = { navController.navigate("settings/update") },
-                        onDismiss = { isUpdateDismissed = true },
-                        modifier = Modifier
-                            .padding(horizontal = SettingsDimensions.ScreenHorizontalPadding)
-                            .padding(bottom = SettingsDimensions.SectionSpacing),
-                    )
-                }
-            }
-
-            if (shouldShowPermissionHint) {
-                item(key = "permission", contentType = "settings_banner") {
-                    SettingsPermissionBanner(
-                        onRequestPermission = {
-                            val toRequest = buildList {
-                                if (!isStorageGranted) add(storagePermission)
-                                if (!isNotificationGranted && notificationPermission != null) {
-                                    add(notificationPermission)
-                                }
+        if (shouldShowPermissionHint) {
+            item(key = "permission", contentType = "settings_banner") {
+                SettingsPermissionBanner(
+                    onRequestPermission = {
+                        val toRequest = buildList {
+                            if (!isStorageGranted) add(storagePermission)
+                            if (!isNotificationGranted && notificationPermission != null) {
+                                add(notificationPermission)
                             }
-                            if (toRequest.isNotEmpty()) {
-                                permissionLauncher.launch(toRequest.toTypedArray())
-                            }
-                        },
-                        modifier = Modifier
-                            .padding(horizontal = SettingsDimensions.ScreenHorizontalPadding)
-                            .padding(bottom = SettingsDimensions.SectionSpacing),
-                    )
-                }
-            }
-
-            itemsIndexed(
-                items = settingsItems,
-                key = { _, item -> item.key },
-                contentType = { _, _ -> "settings_segment" },
-            ) { index, settingsItem ->
-                SettingsSegmentedItem(
-                    item = settingsItem,
-                    index = index,
-                    count = settingsItems.size,
-                    modifier = Modifier.padding(horizontal = 26.dp),
+                        }
+                        if (toRequest.isNotEmpty()) {
+                            permissionLauncher.launch(toRequest.toTypedArray())
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(horizontal = SettingsDimensions.ScreenHorizontalPadding)
+                        .padding(bottom = SettingsDimensions.SectionSpacing),
                 )
             }
+        }
 
-            item(key = "bottom_spacer", contentType = "settings_spacer") {
-                Spacer(modifier = Modifier.height(24.dp))
-            }
+        itemsIndexed(
+            items = settingsItems,
+            key = { _, item -> item.key },
+            contentType = { _, _ -> "settings_segment" },
+        ) { index, settingsItem ->
+            SettingsSegmentedItem(
+                item = settingsItem,
+                index = index,
+                count = settingsItems.size,
+                modifier = Modifier.padding(horizontal = 26.dp),
+            )
+        }
+
+        item(key = "bottom_spacer", contentType = "settings_spacer") {
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }

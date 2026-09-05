@@ -808,7 +808,6 @@ fun BottomSheetPlayer(
         mutableStateOf(false)
     }
     val shouldBlurBackground = !disableBlur && (
-        isLyricsScreenVisible ||
         queueSheetState.isExpandedOrExpanding ||
         (menuState.isVisible && !menuState.isDismissing)
     )
@@ -1195,6 +1194,7 @@ fun BottomSheetPlayer(
                 onSliderValueChangeFinished = onSliderValueChangeFinished,
                 currentFormat = if (playerDesignStyle == PlayerDesignStyle.V7) currentFormat else null,
                 clipboardManager = clipboardManager,
+                isLyricsVisible = isLyricsScreenVisible,
             )
         }
 
@@ -1437,7 +1437,7 @@ fun BottomSheetPlayer(
                             canvasFallbackUrl = artworkCanvas?.videoUrl,
                             onCollapseClick = { state.collapseSoft() },
                             onQueueClick = openQueue,
-                            onLyricsClick = { isLyricsScreenVisible = true },
+                            onLyricsClick = { isLyricsScreenVisible = !isLyricsScreenVisible },
                             onSliderValueChange = onSliderValueChange,
                             onSliderValueChangeFinished = onSliderValueChangeFinished,
                             landscape = true,
@@ -1463,13 +1463,47 @@ fun BottomSheetPlayer(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier.weight(1f),
                         ) {
-                            val screenWidth = LocalConfiguration.current.screenWidthDp
-                            val thumbnailSize = (screenWidth * 0.4).dp
-                            Thumbnail(
-                                sliderPositionProvider = { sliderPosition },
-                                modifier = Modifier.size(thumbnailSize),
-                                isPlayerExpanded = state.isExpanded,
-                            )
+                            enrichedMetadata?.let { metadata ->
+                                PlayerArtworkLyricsArea(
+                                    mediaMetadata = metadata,
+                                    sliderPositionProvider = { sliderPosition },
+                                    isPlayerExpanded = state.isExpanded,
+                                    isLyricsVisible = isLyricsScreenVisible,
+                                    onDismissLyrics = { isLyricsScreenVisible = false },
+                                    lyricsSyncOffset = lyricsSyncOffset,
+                                    onLyricsSyncOffsetChange = { lyricsSyncOffset = it },
+                                    nestedScrollConnection = state.preUpPostDownNestedScrollConnection,
+                                    textBackgroundColor = TextBackgroundColor,
+                                    textButtonColor = textButtonColor,
+                                    iconButtonColor = iconButtonColor,
+                                    currentSongLiked = currentSongLiked,
+                                    onLikeClick = playerConnection::toggleLike,
+                                    onTitleClick = {
+                                        metadata.id.let {
+                                            bottomSheetPageState.show {
+                                                ShowMediaInfo(it)
+                                            }
+                                        }
+                                    },
+                                    onArtistClick = {
+                                        metadata.artists.firstOrNull()?.id?.let { artistId ->
+                                            if (artistId.isNotBlank()) {
+                                                navController.navigate("artist/$artistId")
+                                                state.collapseSoft()
+                                            }
+                                        }
+                                    },
+                                    modifier = Modifier.fillMaxSize(),
+                                )
+                            } ?: run {
+                                val screenWidth = LocalConfiguration.current.screenWidthDp
+                                val thumbnailSize = (screenWidth * 0.4).dp
+                                Thumbnail(
+                                    sliderPositionProvider = { sliderPosition },
+                                    modifier = Modifier.size(thumbnailSize),
+                                    isPlayerExpanded = state.isExpanded,
+                                )
+                            }
                         }
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -1695,7 +1729,7 @@ fun BottomSheetPlayer(
                             canvasFallbackUrl = artworkCanvas?.videoUrl,
                             onCollapseClick = { state.collapseSoft() },
                             onQueueClick = openQueue,
-                            onLyricsClick = { isLyricsScreenVisible = true },
+                            onLyricsClick = { isLyricsScreenVisible = !isLyricsScreenVisible },
                             onSliderValueChange = onSliderValueChange,
                             onSliderValueChangeFinished = onSliderValueChangeFinished,
                             modifier =
@@ -1720,15 +1754,49 @@ fun BottomSheetPlayer(
                                     ),
                                 ).padding(bottom = queueSheetState.collapsedBound),
                     ) {
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier.weight(1f),
-                        ) {
-                            Thumbnail(
+                        enrichedMetadata?.let { metadata ->
+                            PlayerArtworkLyricsArea(
+                                mediaMetadata = metadata,
                                 sliderPositionProvider = { sliderPosition },
-                                modifier = Modifier.nestedScroll(state.preUpPostDownNestedScrollConnection),
                                 isPlayerExpanded = state.isExpanded,
+                                isLyricsVisible = isLyricsScreenVisible,
+                                onDismissLyrics = { isLyricsScreenVisible = false },
+                                lyricsSyncOffset = lyricsSyncOffset,
+                                onLyricsSyncOffsetChange = { lyricsSyncOffset = it },
+                                nestedScrollConnection = state.preUpPostDownNestedScrollConnection,
+                                textBackgroundColor = TextBackgroundColor,
+                                textButtonColor = textButtonColor,
+                                iconButtonColor = iconButtonColor,
+                                currentSongLiked = currentSongLiked,
+                                onLikeClick = playerConnection::toggleLike,
+                                onTitleClick = {
+                                    metadata.id.let {
+                                        bottomSheetPageState.show {
+                                            ShowMediaInfo(it)
+                                        }
+                                    }
+                                },
+                                onArtistClick = {
+                                    metadata.artists.firstOrNull()?.id?.let { artistId ->
+                                        if (artistId.isNotBlank()) {
+                                            navController.navigate("artist/$artistId")
+                                            state.collapseSoft()
+                                        }
+                                    }
+                                },
+                                modifier = Modifier.weight(1f),
                             )
+                        } ?: run {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.weight(1f),
+                            ) {
+                                Thumbnail(
+                                    sliderPositionProvider = { sliderPosition },
+                                    modifier = Modifier.nestedScroll(state.preUpPostDownNestedScrollConnection),
+                                    isPlayerExpanded = state.isExpanded,
+                                )
+                            }
                         }
 
                         enrichedMetadata?.let {
@@ -1773,22 +1841,9 @@ fun BottomSheetPlayer(
             TextBackgroundColor = TextBackgroundColor,
             textButtonColor = textButtonColor,
             iconButtonColor = iconButtonColor,
-            onShowLyrics = { isLyricsScreenVisible = true },
+            onShowLyrics = { isLyricsScreenVisible = !isLyricsScreenVisible },
             pureBlack = pureBlack,
         )
-
-        mediaMetadata?.let { metadata ->
-            MikoLyricsTransition(
-                visible = isLyricsScreenVisible,
-                backHandlerEnabled = isLyricsScreenVisible && state.isExpandedOrExpanding,
-                mediaMetadata = metadata,
-                navController = navController,
-                lyricsSyncOffset = lyricsSyncOffset,
-                onLyricsSyncOffsetChange = { lyricsSyncOffset = it },
-                onDismiss = { isLyricsScreenVisible = false },
-                onQueueClick = openQueue,
-            )
-        }
 
         AnimatedVisibility(
             visible = aodModeEnabled,

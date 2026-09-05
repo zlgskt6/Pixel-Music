@@ -13,11 +13,14 @@
 package com.shahdullah.nomatune.ui.screens
 
 import android.net.Uri
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
@@ -383,7 +386,30 @@ fun NavGraphBuilder.navigationBuilder(
     ) {
         YouTubeBrowseScreen(navController)
     }
-    composable("settings") {
+    composable(
+        "settings",
+        enterTransition = {
+            slideInVertically(
+                initialOffsetY = { it },
+                animationSpec = tween(durationMillis = 350, easing = FastOutSlowInEasing)
+            ) + fadeIn(animationSpec = tween(250))
+        },
+        exitTransition = {
+            slideOutVertically(
+                targetOffsetY = { it },
+                animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
+            ) + fadeOut(animationSpec = tween(200))
+        },
+        popEnterTransition = {
+            fadeIn(animationSpec = tween(250))
+        },
+        popExitTransition = {
+            slideOutVertically(
+                targetOffsetY = { it },
+                animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
+            ) + fadeOut(animationSpec = tween(200))
+        }
+    ) {
         SettingsScreen(navController, scrollBehavior, latestVersionName())
     }
     composable("settings/about") {

@@ -23,6 +23,7 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.core.view.WindowCompat
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -91,11 +92,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -137,6 +141,7 @@ import com.shahdullah.nomatune.constants.CONTENT_TYPE_HEADER
 import com.shahdullah.nomatune.constants.CONTENT_TYPE_LIST
 import com.shahdullah.nomatune.constants.CONTENT_TYPE_PLAYLIST
 import com.shahdullah.nomatune.constants.CONTENT_TYPE_SONG
+import com.shahdullah.nomatune.constants.DisableBlurKey
 import com.shahdullah.nomatune.constants.HideExplicitKey
 import com.shahdullah.nomatune.db.entities.ArtistEntity
 import com.shahdullah.nomatune.extensions.togglePlayPause
@@ -199,6 +204,7 @@ fun ArtistScreen(
     val librarySongs by viewModel.librarySongs.collectAsStateWithLifecycle()
     val libraryAlbums by viewModel.libraryAlbums.collectAsStateWithLifecycle()
     val hideExplicit by rememberPreference(key = HideExplicitKey, defaultValue = false)
+    val disableBlur by rememberPreference(key = DisableBlurKey, defaultValue = false)
 
     val lazyListState = rememberLazyListState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -207,6 +213,32 @@ fun ArtistScreen(
 
     // Get thumbnail URL
     val thumbnail = artistPage?.artist?.thumbnail ?: libraryArtist?.artist?.thumbnailUrl
+
+    // Smooth zoom-out (from slightly zoomed in) and unblur animation for artist photo on enter
+    var imageAnimationStarted by rememberSaveable(thumbnail) { mutableStateOf(false) }
+    LaunchedEffect(thumbnail) {
+        if (thumbnail != null) {
+            imageAnimationStarted = true
+        }
+    }
+
+    val photoScale by animateFloatAsState(
+        targetValue = if (imageAnimationStarted) 1.0f else 1.15f,
+        animationSpec = tween(
+            durationMillis = 1100,
+            easing = CubicBezierEasing(0.2f, 0.0f, 0.2f, 1.0f)
+        ),
+        label = "artist_photo_scale"
+    )
+
+    val photoBlurDp by animateFloatAsState(
+        targetValue = if (!disableBlur && !imageAnimationStarted) 24f else 0f,
+        animationSpec = tween(
+            durationMillis = 1100,
+            easing = CubicBezierEasing(0.2f, 0.0f, 0.2f, 1.0f)
+        ),
+        label = "artist_photo_blur"
+    )
 
     // Image brightness detection for status bar & icon tint
     var isBrightImage by remember { mutableStateOf(false) }
@@ -387,13 +419,23 @@ fun ArtistScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(coverHeight)
+                                .clipToBounds()
                         ) {
                             if (thumbnail != null) {
                                 AsyncImage(
                                     model = thumbnail.resize(1200, 1200),
                                     contentDescription = null,
                                     contentScale = ContentScale.Crop,
-                                    modifier = Modifier.fillMaxSize()
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .graphicsLayer {
+                                            scaleX = photoScale
+                                            scaleY = photoScale
+                                            clip = true
+                                        }
+                                        .then(
+                                            if (!disableBlur && photoBlurDp > 0.5f) Modifier.blur(photoBlurDp.dp) else Modifier
+                                        )
                                 )
                             } else {
                                 Box(

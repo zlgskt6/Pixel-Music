@@ -206,6 +206,7 @@ import com.shahdullah.nomatune.constants.CustomThemeColorKey
 import com.shahdullah.nomatune.constants.DarkModeKey
 import com.shahdullah.nomatune.constants.DefaultOpenTabKey
 import com.shahdullah.nomatune.constants.DisableAnimationsKey
+import com.shahdullah.nomatune.constants.DisableBlurKey
 import com.shahdullah.nomatune.constants.DisableScreenshotKey
 import com.shahdullah.nomatune.constants.DynamicThemeKey
 import com.shahdullah.nomatune.constants.FloatingToolbarBottomPadding
@@ -264,6 +265,7 @@ import com.shahdullah.nomatune.playback.queues.YouTubeAlbumRadio
 import com.shahdullah.nomatune.playback.queues.YouTubeQueue
 import com.shahdullah.nomatune.ui.component.BottomSheetMenu
 import com.shahdullah.nomatune.ui.component.BottomSheetPage
+import com.shahdullah.nomatune.ui.component.SettingsBottomSheet
 import com.shahdullah.nomatune.ui.component.COLLAPSED_ANCHOR
 import com.shahdullah.nomatune.ui.component.CreatePlaylistDialog
 import com.shahdullah.nomatune.ui.component.DISMISSED_ANCHOR
@@ -306,6 +308,7 @@ import com.shahdullah.nomatune.utils.Updater
 import com.shahdullah.nomatune.utils.dataStore
 import com.shahdullah.nomatune.utils.get
 import com.shahdullah.nomatune.utils.getAsync
+import com.shahdullah.nomatune.utils.isRecapTimePeriod
 import com.shahdullah.nomatune.utils.rememberEnumPreference
 import com.shahdullah.nomatune.utils.rememberPreference
 import com.shahdullah.nomatune.utils.reportException
@@ -1315,10 +1318,12 @@ class MainActivity : ComponentActivity() {
                     }
 
                     var shouldShowTopBar by rememberSaveable { mutableStateOf(false) }
+                    var isSettingsMenuOpen by rememberSaveable { mutableStateOf(false) }
 
                     val innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
                     val accountImageUrlPref by rememberPreference(AccountImageUrlKey, "")
                     val (isRecapBubbleDismissed, onRecapBubbleDismissedChange) = rememberPreference(RecapBubbleDismissedKey, false)
+                    val disableBlur by rememberPreference(DisableBlurKey, false)
 
                     val isLoggedIn = remember(innerTubeCookie) {
                         hasYouTubeLoginCookie(innerTubeCookie)
@@ -1327,11 +1332,7 @@ class MainActivity : ComponentActivity() {
                         if (isLoggedIn && accountImageUrlPref.isNotBlank()) accountImageUrlPref else null
                     }
 
-                    val isSecondHalfOfDecember = remember {
-                        val cal = java.util.Calendar.getInstance()
-                        cal.get(java.util.Calendar.MONTH) == java.util.Calendar.DECEMBER &&
-                        cal.get(java.util.Calendar.DAY_OF_MONTH) >= 15
-                    }
+                    val isSecondHalfOfDecember = remember { isRecapTimePeriod() }
 
                     val isHomeScreen = navBackStackEntry?.destination?.route == Screens.Home.route
 
@@ -1480,6 +1481,14 @@ class MainActivity : ComponentActivity() {
                             val bgScale = 1f - (playerProgress * 0.05f)
                             val bgBlurDp = (playerProgress * 12f).dp
 
+                            val settingsMenuProgress by animateFloatAsState(
+                                targetValue = if (isSettingsMenuOpen) 1f else 0f,
+                                animationSpec = tween(durationMillis = 350, easing = FastOutSlowInEasing),
+                                label = "settingsMenuProgress",
+                            )
+                            val effectiveBgScale = bgScale * (1f - (settingsMenuProgress * 0.04f))
+                            val effectiveBgBlurDp = if (!disableBlur) (bgBlurDp + (settingsMenuProgress * 16f).dp) else 0.dp
+
                             Scaffold(
                                 topBar = {
                                     if (shouldShowTopBar) {
@@ -1521,11 +1530,14 @@ class MainActivity : ComponentActivity() {
                                                     )
                                                 }
                                                 .graphicsLayer {
-                                                    scaleX = bgScale
-                                                    scaleY = bgScale
+                                                    scaleX = effectiveBgScale
+                                                    scaleY = effectiveBgScale
                                                     transformOrigin = TransformOrigin(0.5f, 0.5f)
                                                 }
-                                                .blur(bgBlurDp)
+                                                .then(
+                                                    if (!disableBlur && effectiveBgBlurDp > 0.dp) Modifier.blur(effectiveBgBlurDp)
+                                                    else Modifier
+                                                )
                                         ) {
                                             // Gradient shadow background
                                             if (shouldShowBlurBackground) {
@@ -1605,7 +1617,12 @@ class MainActivity : ComponentActivity() {
                                                         }
 
                                                         IconButton(
-                                                            onClick = { navController.navigate("settings") },
+                                                            onClick = {
+                                                                if (playerBottomSheetState.isExpanded) {
+                                                                    playerBottomSheetState.collapseSoft()
+                                                                }
+                                                                isSettingsMenuOpen = true
+                                                            },
                                                             modifier = Modifier.padding(end = 4.dp)
                                                         ) {
                                                             if (isLoggedIn && !youtubeProfileUrl.isNullOrBlank()) {
@@ -1862,11 +1879,14 @@ class MainActivity : ComponentActivity() {
                                         }
                                     }
                                     .graphicsLayer {
-                                        scaleX = bgScale
-                                        scaleY = bgScale
+                                        scaleX = effectiveBgScale
+                                        scaleY = effectiveBgScale
                                         transformOrigin = TransformOrigin(0.5f, 0.5f)
                                     }
-                                    .blur(bgBlurDp),
+                                    .then(
+                                        if (!disableBlur && effectiveBgBlurDp > 0.dp) Modifier.blur(effectiveBgBlurDp)
+                                        else Modifier
+                                    ),
                         ) {
                                             FloatingNavigationToolbar(
                                                 items = navigationItems,
@@ -1879,7 +1899,12 @@ class MainActivity : ComponentActivity() {
                                                         bottom = bottomInset + floatingBarsBottomPadding,
                                                     )
                                                     .height(navVisibleHeight),
-                                                onFabClick = { navController.navigate("settings") },
+                                                onFabClick = {
+                                                    if (playerBottomSheetState.isExpanded) {
+                                                        playerBottomSheetState.collapseSoft()
+                                                    }
+                                                    isSettingsMenuOpen = true
+                                                },
                                                 fabIconRes = R.drawable.settings,
                                                 fabContentDescription = stringResource(R.string.settings),
                                                 onShuffleClick = if (shouldShowHomeShuffleButton) {
@@ -2065,11 +2090,14 @@ class MainActivity : ComponentActivity() {
                                     },
                                     modifier = Modifier
                                         .graphicsLayer {
-                                            scaleX = bgScale
-                                            scaleY = bgScale
+                                            scaleX = effectiveBgScale
+                                            scaleY = effectiveBgScale
                                             transformOrigin = TransformOrigin(0.5f, 0.5f)
                                         }
-                                        .blur(bgBlurDp)
+                                        .then(
+                                            if (!disableBlur && effectiveBgBlurDp > 0.dp) Modifier.blur(effectiveBgBlurDp)
+                                            else Modifier
+                                        )
                                         .then(
                                             if (isTvDevice) Modifier
                                                 .focusRequester(contentAreaFocusRequester)
@@ -2099,10 +2127,6 @@ class MainActivity : ComponentActivity() {
                             }
                         }
 
-                        BackHandler(enabled = playerBottomSheetState.isExpanded) {
-                            playerBottomSheetState.collapseSoft()
-                        }
-
                         BottomSheetMenu(
                             state = LocalMenuState.current,
                             modifier = Modifier.align(Alignment.BottomCenter)
@@ -2110,6 +2134,15 @@ class MainActivity : ComponentActivity() {
 
                         BottomSheetPage(
                             state = LocalBottomSheetPageState.current,
+                            modifier = Modifier.align(Alignment.BottomCenter)
+                        )
+
+                        SettingsBottomSheet(
+                            isOpen = isSettingsMenuOpen,
+                            onDismiss = { isSettingsMenuOpen = false },
+                            navController = navController,
+                            latestVersionName = latestVersionName,
+                            onClearUpdateBadge = { latestVersionName = BuildConfig.VERSION_NAME },
                             modifier = Modifier.align(Alignment.BottomCenter)
                         )
 

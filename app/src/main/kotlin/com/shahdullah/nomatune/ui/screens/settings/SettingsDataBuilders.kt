@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.shahdullah.nomatune.BuildConfig
 import com.shahdullah.nomatune.R
+import com.shahdullah.nomatune.utils.isRecapTimePeriod
 
 
 
@@ -36,53 +37,66 @@ fun buildSettingsGroups(
     context: Context,
 ): List<SettingsGroup> =
     buildList {
+        val isRecap = isRecapTimePeriod()
         add(
             SettingsGroup(
                 title = stringResource(R.string.settings),
-                items = listOf(
-                    SettingsItem(
-                        key = "account",
-                        icon = painterResource(R.drawable.account),
-                        title = stringResource(R.string.account),
-                        subtitle = stringResource(R.string.settings_account_subtitle),
-                        accentColor = MaterialTheme.colorScheme.primary,
-                        onClick = { navController.navigate("settings/account") },
-                    ),
-                    SettingsItem(
-                        key = "stats",
-                        icon = painterResource(R.drawable.stats),
-                        title = stringResource(R.string.settings_stats_title),
-                        subtitle = stringResource(R.string.settings_stats_subtitle),
-                        accentColor = MaterialTheme.colorScheme.primary,
-                        onClick = { navController.navigate("stats") },
-                    ),
-                    SettingsItem(
-                        key = "appearance",
-                        icon = painterResource(R.drawable.palette),
-                        title = stringResource(R.string.appearance),
-                        subtitle = stringResource(R.string.settings_appearance_subtitle),
-                        accentColor = MaterialTheme.colorScheme.secondary,
-                        onClick = { navController.navigate("settings/appearance") },
-                    ),
-                    SettingsItem(
-                        key = "playback",
-                        icon = painterResource(R.drawable.music_note),
-                        title = stringResource(R.string.settings_playback_title),
-                        subtitle = stringResource(R.string.settings_playback_subtitle),
-                        accentColor = MaterialTheme.colorScheme.tertiary,
-                        onClick = { navController.navigate("settings/player") },
-                    ),
+                items = buildList {
+                    add(
+                        SettingsItem(
+                            key = "account",
+                            icon = painterResource(R.drawable.account),
+                            title = stringResource(R.string.account),
+                            subtitle = stringResource(R.string.settings_account_subtitle),
+                            accentColor = MaterialTheme.colorScheme.primary,
+                            onClick = { navController.navigate("settings/account") },
+                        ),
+                    )
+                    if (isRecap) {
+                        add(
+                            SettingsItem(
+                                key = "stats",
+                                icon = painterResource(R.drawable.stats),
+                                title = stringResource(R.string.settings_stats_title),
+                                subtitle = stringResource(R.string.settings_stats_subtitle),
+                                accentColor = MaterialTheme.colorScheme.primary,
+                                onClick = { navController.navigate("stats") },
+                            ),
+                        )
+                    }
+                    add(
+                        SettingsItem(
+                            key = "appearance",
+                            icon = painterResource(R.drawable.palette),
+                            title = stringResource(R.string.appearance),
+                            subtitle = stringResource(R.string.settings_appearance_subtitle),
+                            accentColor = MaterialTheme.colorScheme.secondary,
+                            onClick = { navController.navigate("settings/appearance") },
+                        ),
+                    )
+                    add(
+                        SettingsItem(
+                            key = "playback",
+                            icon = painterResource(R.drawable.music_note),
+                            title = stringResource(R.string.settings_playback_title),
+                            subtitle = stringResource(R.string.settings_playback_subtitle),
+                            accentColor = MaterialTheme.colorScheme.tertiary,
+                            onClick = { navController.navigate("settings/player") },
+                        ),
+                    )
 
 
-                    SettingsItem(
-                        key = "backup_restore",
-                        icon = painterResource(R.drawable.backup),
-                        title = stringResource(R.string.backup_restore),
-                        subtitle = stringResource(R.string.settings_backup_restore_subtitle),
-                        accentColor = MaterialTheme.colorScheme.primary,
-                        onClick = { navController.navigate("settings/backup_restore") },
-                    ),
-                ),
+                    add(
+                        SettingsItem(
+                            key = "backup_restore",
+                            icon = painterResource(R.drawable.backup),
+                            title = stringResource(R.string.backup_restore),
+                            subtitle = stringResource(R.string.settings_backup_restore_subtitle),
+                            accentColor = MaterialTheme.colorScheme.primary,
+                            onClick = { navController.navigate("settings/backup_restore") },
+                        ),
+                    )
+                },
             ),
         )
 
