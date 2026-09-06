@@ -64,6 +64,12 @@
 
   ---
 
+### I'd appreciate some feedback
+This app has only been tested and used on my Pixel 10 Pro XL, would love to hear how mid range devices run
+Thank you
+
+  ---
+
   ## 📥 Installation
 
   ### 🔽 Direct APK
