@@ -108,6 +108,8 @@ android {
             val ksPath = System.getenv("KEYSTORE_PATH")
             if (!ksPath.isNullOrBlank() && file(ksPath).exists()) {
                 signingConfig = signingConfigs.getByName("release")
+            } else {
+                signingConfig = signingConfigs.getByName("debugConfig")
             }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
