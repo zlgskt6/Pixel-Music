@@ -5,7 +5,7 @@
 
   # Pixel Music
 
-  ### Material 3 Expressive Music Player
+  ### 𝘔𝘢𝘵𝘦𝘳𝘪𝘢𝘭 3 𝘌𝘹𝘱𝘳𝘦𝘴𝘴𝘪𝘷𝘦 𝘔𝘶𝘴𝘪𝘤 𝘗𝘭𝘢𝘺𝘦𝘳
 
   **Ad free, beautifully designed music streaming.**
 
@@ -22,27 +22,26 @@
 
   ---
 
-  ## ✨ Features
+  ## ✨ 𝘧𝘦𝘢𝘵𝘶𝘳𝘦𝘴
 
-  ### 🎧 Playback
+  ### 🎧 𝘱𝘭𝘢𝘺𝘣𝘢𝘤𝘬
   - Ad-free streaming with background listening
   - Multiple account support with quick switching
   - Local file & playlist support
   - Fast startup, lightweight performance
-  - EBU R128 loudness normalization
   - Tempo, pitch, and playback speed controls
   - Crossfade between tracks
   - System equalizer
   - Optional option to sign in on Youtube & Spotify
 
-  ### 🎤 Lyrics & Discovery
+  ### 🎤 𝘭𝘺𝘳𝘪𝘤𝘴 & 𝘥𝘪𝘴𝘤𝘰𝘷𝘦𝘳𝘺
   - Live synced lyrics
   - Built in music recognition feature
   - Real-time listening statistics
   - Import playlists from Spotify
   - YouTube Music account sync
 
-  ### 🎨 Design
+  ### 🎨 𝘥𝘦𝘴𝘪𝘨𝘯
   - Material 3 Expressive design language
   - Album-art powered dynamic colors
   - Smooth animations throughout the app.
@@ -52,7 +51,7 @@
 
   ---
 
-  ## 📱 Screenshots
+  ## 📱 𝘴𝘤𝘳𝘦𝘦𝘯𝘴𝘩𝘰𝘵𝘴
 
 <img width="240" height="520" alt="Screenshot_20260906_234455" src="https://github.com/user-attachments/assets/1e353d9e-ae52-4341-a73b-55e4936470ee" />
 <img width="240" height="520" alt="Screenshot_20260906_234644" src="https://github.com/user-attachments/assets/cc573590-ecc2-4131-af22-e1db54ad780f" />
@@ -64,15 +63,16 @@
 
   ---
 
-### I'd appreciate some feedback
-This app has only been tested and used on my Pixel 10 Pro XL, would love to hear how mid range devices run
+### 𝘐'𝘥 𝘢𝘱𝘱𝘳𝘦𝘤𝘪𝘢𝘵𝘦 𝘴𝘰𝘮𝘦 𝘧𝘦𝘦𝘥𝘣𝘢𝘤𝘬
+
+this app has only been tested and used on my Pixel 10 Pro XL, would love to hear how mid range devices perform.
 Thank you
 
   ---
 
-  ## 📥 Installation
+  ## 📥 𝘪𝘯𝘴𝘵𝘢𝘭𝘭𝘢𝘵𝘪𝘰𝘯
 
-  ### 🔽 Direct APK
+  ### 🔽 𝘥𝘪𝘳𝘦𝘤𝘵 𝘢𝘱𝘬
   1. Go to [Releases](https://github.com/zlgskt6/Pixel-Music/releases/latest)
   2. Download the APK for your device (arm64 recommended for most phones)![Uploading Screenshot_20260906_234455.png…]()
 
@@ -80,7 +80,7 @@ Thank you
 
   ---
 
-  ## 🛠️ Building from Source
+  ## 🛠️ 𝘣𝘶𝘪𝘭𝘥𝘪𝘯𝘨 𝘧𝘳𝘰𝘮 𝘴𝘰𝘶𝘳𝘤𝘦
 
   ### Requirements
   - Android Studio Ladybug or newer
@@ -102,7 +102,7 @@ Thank you
 
   
 
-  ## ❤️ Credits & Inspiration
+  ## ❤️ 𝘤𝘳𝘦𝘥𝘪𝘵𝘴 𝘢𝘯𝘥 𝘪𝘯𝘴𝘱𝘪𝘳𝘢𝘵𝘪𝘰𝘯
 
   This project acknowledges and credits @rukamori/ArchiveTune as a primary source of inspiration for design and feature ideas. They've done all the heavy work behind the scenes, such as the foundation of the UI and Youtube algorithm work and deserve much love.
 
