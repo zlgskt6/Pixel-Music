@@ -1,6 +1,6 @@
 /*
  * Pixel Music (2026)
- * © Shahdullah — github.com/shahdullah
+ * © zlgskt6 — github.com/zlgskt6
  * GPL-3.0 License | Contributors: see git history
  * Do not remove or alter this notice. - Per GPL-3.0 Section 4 & Section 5
  *
@@ -10,7 +10,7 @@
  * Do not remove or alter this notice. - Per GPL-3.0 Section 4 & Section 5
  */
 
-import com.shahdullah.nomatune.betterlyrics.TTMLParser
+import com.zlgskt6.pixelmusic.betterlyrics.TTMLParser
 
 fun main(args: Array<String>) {
     val ttml = """

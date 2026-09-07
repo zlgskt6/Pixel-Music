@@ -30,15 +30,15 @@ val discordApplicationIdLong = discordApplicationId.toLongOrNull() ?: 1165706613
 val discordRedirectScheme = "discord-$discordApplicationId"
 
 android {
-    namespace = "com.shahdullah.nomatune"
+    namespace = "com.zlgskt6.pixelmusic"
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.shahdullah.nomatune"
+        applicationId = "com.zlgskt6.pixelmusic"
         minSdk = 26
         targetSdk = 36
-        versionCode = 20
-        versionName = "1.3.6"
+        versionCode = 21
+        versionName = "1.3.7"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -240,6 +240,8 @@ dependencies {
     implementation(libs.kuromoji.ipadic)
     ksp(libs.room.compiler)
     implementation(libs.room.ktx)
+
+    implementation(libs.onnxruntime)
 
     implementation(libs.apache.lang3)
 

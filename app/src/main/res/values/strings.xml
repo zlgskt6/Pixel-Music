@@ -18,6 +18,7 @@
     <string name="forgotten_favorites">Forgotten favorites</string>
     <string name="keep_listening">Keep listening</string>
     <string name="your_youtube_playlists">Your YouTube playlists</string>
+    <string name="support_developer_kofi">Support the developer on Ko-fi</string>
     <string name="similar_to">Similar to</string>
     <string name="new_release_albums">New release albums</string>
     <string name="integration">Integration</string>
@@ -794,6 +795,8 @@
     <string name="filter_discord_only">Discord</string>
     <string name="filter_all_logs">All</string>
     <string name="clear">Clear</string>
+    <string name="clear_queue">Clear queue</string>
+    <string name="clear_queue_confirm">Are you sure you want to clear the upcoming queue?</string>
     <string name="logs_empty_message">Logs will appear here when available</string>
     <string name="real_time_playback_stats">Real-time playback statistics</string>
     <string name="copied_to_clipboard">Copied log to clipboard</string>
@@ -1059,4 +1062,7 @@
     <string name="updates_channel_warning_nightly_risk">Risk: May contain bugs or incomplete features.</string>
     <string name="updates_channel_warning_nightly_unstable">This channel is intended for users who want to test the absolute latest changes.</string>
     <string name="updates_channel_warning_acknowledgement">By enabling notifications, you agree to receive updates from your selected channel.</string>
+    <string name="sing_mode">Apple Music Sing</string>
+    <string name="vocal_volume">Vocal Volume</string>
+    <string name="karaoke_mode">Karaoke Mode</string>
 </resources>

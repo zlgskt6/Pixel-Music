@@ -100,11 +100,11 @@
 
 ## Queue Persistence Rules
 # Keep queue-related classes to prevent serialization issues in release builds
--keep class com.shahdullah.nomatune.models.PersistQueue { *; }
--keep class com.shahdullah.nomatune.models.PersistPlayerState { *; }
--keep class com.shahdullah.nomatune.models.QueueData { *; }
--keep class com.shahdullah.nomatune.models.QueueType { *; }
--keep class com.shahdullah.nomatune.playback.queues.** { *; }
+-keep class com.zlgskt6.pixelmusic.models.PersistQueue { *; }
+-keep class com.zlgskt6.pixelmusic.models.PersistPlayerState { *; }
+-keep class com.zlgskt6.pixelmusic.models.QueueData { *; }
+-keep class com.zlgskt6.pixelmusic.models.QueueType { *; }
+-keep class com.zlgskt6.pixelmusic.playback.queues.** { *; }
 
 # Keep serialization methods for queue persistence
 -keepclassmembers class * implements java.io.Serializable {
